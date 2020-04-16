@@ -11,5 +11,5 @@ if __name__ == '__main__':
         random.shuffle(pc_str_lines)
         num = int(len(pc_str_lines) / 100)
         with open(path.replace('.zip', '.txt'), 'w') as f:
-            for line in pc_str_lines[:num]
+            for line in pc_str_lines[:num]:
                 f.write(line + '\n')
