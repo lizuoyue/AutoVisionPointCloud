@@ -6,11 +6,9 @@ if __name__ == '__main__':
 
     random.seed(7)
     path="data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud"
-    os.system(f'rm {path}*.txt')
-    quit()
-
     for i in range(9):
         os.system(f'zip {path}_sample_{i}.zip {path}_{i}.txt')
+    os.system(f'rm {path}*.txt')
     quit()
 
     for i in range(9):
