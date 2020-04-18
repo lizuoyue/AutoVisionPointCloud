@@ -49,7 +49,7 @@ def get_cam_poses_nx7(path):
     return np.array([[float(item) for item in line.split()] for line in camera_poses[1:]])[:, 1: 8]
 
 def get_pc_nxstr(path, show_time=True):
-    basename = os.path.basename(path).replace('_sample.zip', '.txt')
+    basename = os.path.basename(path).replace('_sample.zip', '.txt').replace('.zip', '.txt')
     tic = time.time()
     archive = zipfile.ZipFile(path, 'r')
     pc_data = archive.read(basename).decode('utf-8')
