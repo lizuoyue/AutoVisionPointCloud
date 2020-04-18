@@ -17,13 +17,13 @@ if __name__ == '__main__':
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
-        cam_int_path =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/camera_system_cal.json'
-        cam_loc_path =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local.txt'
-        cam_ext_path =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_local_camera.txt'
-        cam_msk_path = f'2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/mask_{cam_name}_undist.png'
-        pc_path      =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_0.zip'
-        img_path     =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/img_undistorted/DEV_000F3102F884/%05d.png'
-        depth_path   =  '2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/DEV_000F3102F884/%05d.pgm'
+        cam_int_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/camera_system_cal.json'
+        cam_loc_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local.txt'
+        cam_ext_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_local_camera.txt'
+        cam_msk_path = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/mask_{cam_name}_undist.png'
+        pc_path      =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_0.zip'
+        img_path     =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_undistorted/DEV_000F3102F884/%05d.png'
+        depth_path   =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/DEV_000F3102F884/%05d.pgm'
         downsampling_scale = 2
 
     # Local
