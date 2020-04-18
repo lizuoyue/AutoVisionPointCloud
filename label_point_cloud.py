@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
-        cam_int_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/camera_system_cal.json'
+        cam_int_path =  'data/2018-08-10-Calibration-Data/camera_system_cal.json'
         cam_loc_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local.txt'
         cam_ext_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_local_camera.txt'
         cam_msk_path = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/2018-08-10-Calibration-Data/mask_{cam_name}_undist.png'
