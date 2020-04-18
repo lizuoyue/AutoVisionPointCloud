@@ -11,12 +11,15 @@ from utils import *
 
 if __name__ == '__main__':
     #
-    CUBE, EPSILON = 128, 0.2
+    CUBE, EPSILON = 128, 0.3
     host_name = socket.gethostname()
     cam_name = 'DEV_000F3102F884'
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
+        import matplotlib
+        matplotlib.use('agg')
+        import matplotlib.pyplot as plt
         cam_int_path =  'data/2018-08-10-Calibration-Data/camera_system_cal.json'
         cam_loc_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local.txt'
         cam_ext_path =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_local_camera.txt'
@@ -52,13 +55,14 @@ if __name__ == '__main__':
 
     #
     np.set_printoptions(suppress=True)
+    cmap = matplotlib.cm.get_cmap('bwr')
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[:1500]))):
     # for i, pose in list(enumerate(cam_poses[:1500])):
 
-        if i < 402 or i > 402:
-            continue
+        # if i < 402 or i > 402:
+        #     continue
 
         # a = np.array(Image.open(depth_path % i))
         # b = json.load(open(depth_path.replace('.pgm', '.json') % i))
@@ -96,13 +100,13 @@ if __name__ == '__main__':
 
         pc_cam_coord = mat_world_to_cam[:3].dot(pc_near_cam_coord.T)
         idx = pc_cam_coord[-1] > 0
-        z_val = pc_cam_coord[-1]
         pc_cam_coord = pc_cam_coord[:, idx]
         pc_cam_color = pc_near_cam_color[idx]
+        z_val = pc_cam_coord[-1]
 
         dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
         pc_cam_coord /= dist
-        dist = z_val.reshape((-1))
+        # dist = z_val.reshape((-1))
 
         # pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
 
@@ -117,18 +121,22 @@ if __name__ == '__main__':
 
         valid = ((depth_min[one_dim_idx] < dist[idx]) & (dist[idx] < depth_max[one_dim_idx]))
 
+        beishu = np.log(dist[idx] / (depth[one_dim_idx] + 1e-3))
+        beishu = ((np.clip(beishu, -5, 5) + 5) / 10 * 255).astype(np.uint8)
+        beishu = (cmap(beishu) * 255).astype(np.uint8)
+
         if False:
             fake_img = np.ones(img_size[::-1], np.uint8) * 255
             fake_img[cam_mask < 10] = 127
         else:
-            fake_img = np.array(Image.open(img_path % i))
+            fake_img = np.array(Image.open(img_path % i).convert('RGB'))
 
-        fake_img = fake_img.reshape((-1))
+        fake_img = fake_img.reshape((-1, 3))
         fake_img_1 = fake_img.copy()
-        fake_img[one_dim_idx] = pc_cam_color[idx]
+        fake_img[one_dim_idx] = beishu[:, :3]#pc_cam_color[idx]
         fake_img_1[one_dim_idx[valid]] = pc_cam_color[idx[valid]]
-        fake_img = fake_img.reshape(img_size[::-1])
-        fake_img_1 = fake_img_1.reshape(img_size[::-1])
+        fake_img = fake_img.reshape(img_size[::-1]+(3,))
+        fake_img_1 = fake_img_1.reshape(img_size[::-1]+(3,))
 
         # print(dist[idx].shape, dist[idx].min(), dist[idx].max())
         # print(depth[one_dim_idx].shape, depth[one_dim_idx].min(), depth[one_dim_idx].max())
@@ -143,6 +151,7 @@ if __name__ == '__main__':
         # gt_img = np.array(Image.open(img_files[i])).reshape(-1)
         # print((gt_img[y * 1024 + x] == pc_near_cam_color[idx]).mean())
 
-        Image.fromarray(np.hstack([fake_img, fake_img_1]).save('fake_img/%05d_%02d.png' % (i, CUBE))
+        Image.fromarray(np.hstack([fake_img, fake_img_1])).save('fake_img/%05d_%02d.png' % (i, CUBE))
         # plt.imshow(fake_img)
         # plt.show()
+
