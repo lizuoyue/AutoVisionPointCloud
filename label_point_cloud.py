@@ -11,7 +11,7 @@ from utils import *
 
 if __name__ == '__main__':
     #
-    CUBE, EPSILON = 128, 0.3
+    CUBE, EPSILON = 128, 0.10
     host_name = socket.gethostname()
     cam_name = 'DEV_000F3102F884'
 
@@ -59,10 +59,6 @@ if __name__ == '__main__':
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[:1500]))):
-    # for i, pose in list(enumerate(cam_poses[:1500])):
-
-        # if i < 402 or i > 402:
-        #     continue
 
         # a = np.array(Image.open(depth_path % i))
         # b = json.load(open(depth_path.replace('.pgm', '.json') % i))
@@ -74,8 +70,8 @@ if __name__ == '__main__':
         # plt.show()
         # continue
 
-        # if i < 396 or i > 407:
-        #     continue
+        if i < 396 or i > 407:
+            continue
 
         # depth = np.array(Image.open(depth_path % i)).reshape((-1))
         depth = json.load(open(depth_path.replace('.pgm', '.json') % i))
@@ -104,9 +100,8 @@ if __name__ == '__main__':
         pc_cam_color = pc_near_cam_color[idx]
         z_val = pc_cam_coord[-1]
 
-        dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
+        dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0)) # comparison should times 0.75?
         pc_cam_coord /= dist
-        # dist = z_val.reshape((-1))
 
         # pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
 
@@ -119,9 +114,18 @@ if __name__ == '__main__':
         idx = ((x >= 0) & (x < img_size[0]) & (y >= 0) & (y < img_size[1])).nonzero()[0]
         one_dim_idx = y[idx] * img_size[0] + x[idx]
 
-        valid = ((depth_min[one_dim_idx] < dist[idx]) & (dist[idx] < depth_max[one_dim_idx]))
+        # aa, bb, cc = [], [], 10
+        # for coef in range(1,101):
+        #     valid = ((depth_min[one_dim_idx] < dist[idx]*coef/cc) & (dist[idx]*coef/cc < depth_max[one_dim_idx]))
+        #     aa.append(coef/cc)
+        #     bb.append(valid.mean())
+        # plt.plot(aa, bb)
+        # plt.show()
+        # continue
 
-        beishu = np.log(dist[idx] / (depth[one_dim_idx] + 1e-3))
+        valid = ((depth_min[one_dim_idx] < dist[idx] * 0.75) & (dist[idx] * 0.75 < depth_max[one_dim_idx]))
+
+        beishu = np.log(dist[idx] * 0.75 / (depth[one_dim_idx] + 1e-3))
         beishu = ((np.clip(beishu, -5, 5) + 5) / 10 * 255).astype(np.uint8)
         beishu = (cmap(beishu) * 255).astype(np.uint8)
 
@@ -131,27 +135,18 @@ if __name__ == '__main__':
         else:
             fake_img = np.array(Image.open(img_path % i).convert('RGB'))
 
-        fake_img = fake_img.reshape((-1, 3))
-        fake_img_1 = fake_img.copy()
-        fake_img[one_dim_idx] = beishu[:, :3]#pc_cam_color[idx]
-        fake_img_1[one_dim_idx[valid]] = pc_cam_color[idx[valid]]
-        fake_img = fake_img.reshape(img_size[::-1]+(3,))
-        fake_img_1 = fake_img_1.reshape(img_size[::-1]+(3,))
+        fake_imgs = [fake_img.reshape((-1, 3)).copy() for _ in range(4)]
 
-        # print(dist[idx].shape, dist[idx].min(), dist[idx].max())
-        # print(depth[one_dim_idx].shape, depth[one_dim_idx].min(), depth[one_dim_idx].max())
-        # continue
+        fake_imgs[1][one_dim_idx] = pc_cam_color[idx]
+        fake_imgs[2][one_dim_idx] = beishu[:, :3]
+        fake_imgs[3][one_dim_idx[valid]] = pc_cam_color[idx[valid]]
 
-        # hm = np.zeros((200, 100))
-        # for iii, jjj in zip(dist[idx], depth[one_dim_idx].astype(float)):
-        #     hm[199-int(iii), int(jjj)] += 1
-        # plt.imshow(hm, vmin=0, vmax=20)
-        # plt.show()
+        fake_imgs = [item.reshape(img_size[::-1]+(3,)) for item in fake_imgs]
 
         # gt_img = np.array(Image.open(img_files[i])).reshape(-1)
         # print((gt_img[y * 1024 + x] == pc_near_cam_color[idx]).mean())
-
-        Image.fromarray(np.hstack([fake_img, fake_img_1])).save('fake_img/%05d_%02d.png' % (i, CUBE))
+        to_save = np.vstack([np.hstack([fake_imgs[0], fake_imgs[1]]), np.hstack([fake_imgs[2], fake_imgs[3]])])
+        Image.fromarray(to_save).save('fake_img/%05d_%02d.png' % (i, CUBE))
         # plt.imshow(fake_img)
         # plt.show()
 
