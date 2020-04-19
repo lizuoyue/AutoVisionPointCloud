@@ -100,8 +100,9 @@ if __name__ == '__main__':
         pc_cam_color = pc_near_cam_color[idx]
         z_val = pc_cam_coord[-1]
 
-        dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0)) # comparison should times 0.75?
+        dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
         pc_cam_coord /= dist
+        dist *= 0.815  # comparison should times what?
 
         # pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
 
@@ -114,18 +115,23 @@ if __name__ == '__main__':
         idx = ((x >= 0) & (x < img_size[0]) & (y >= 0) & (y < img_size[1])).nonzero()[0]
         one_dim_idx = y[idx] * img_size[0] + x[idx]
 
-        # aa, bb, cc = [], [], 10
-        # for coef in range(1,101):
+        valid = verify_distance(one_dim_idx, dist[idx])
+        one_dim_idx = one_dim_idx[valid]
+        idx = idx[valid]
+
+        # aa, bb, cc = [], [], 100
+        # for coef in range(1,201):
         #     valid = ((depth_min[one_dim_idx] < dist[idx]*coef/cc) & (dist[idx]*coef/cc < depth_max[one_dim_idx]))
         #     aa.append(coef/cc)
         #     bb.append(valid.mean())
         # plt.plot(aa, bb)
         # plt.show()
         # continue
+        
+        valid = (depth_min[one_dim_idx] < dist[idx]) & (dist[idx] < depth_max[one_dim_idx])
+        print(valid.mean())
 
-        valid = ((depth_min[one_dim_idx] < dist[idx] * 0.75) & (dist[idx] * 0.75 < depth_max[one_dim_idx]))
-
-        beishu = np.log(dist[idx] * 0.75 / (depth[one_dim_idx] + 1e-3))
+        beishu = np.log(dist[idx] / (depth[one_dim_idx] + 1e-3))
         beishu = ((np.clip(beishu, -5, 5) + 5) / 10 * 255).astype(np.uint8)
         beishu = (cmap(beishu) * 255).astype(np.uint8)
 
