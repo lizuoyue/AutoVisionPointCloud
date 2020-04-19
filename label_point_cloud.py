@@ -70,8 +70,8 @@ if __name__ == '__main__':
         # plt.show()
         # continue
 
-        # if i < 396 or i > 407:
-        #     continue
+        if i < 209:
+            continue
 
         # depth = np.array(Image.open(depth_path % i)).reshape((-1))
         depth = json.load(open(depth_path.replace('.pgm', '.json') % i))
