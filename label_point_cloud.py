@@ -11,7 +11,7 @@ from utils import *
 
 if __name__ == '__main__':
     #
-    CUBE, EPSILON = 128, 0.10
+    CUBE, MAX_Z, EPSILON = 128, 50, 0.10
     host_name = socket.gethostname()
     cam_name = 'DEV_000F3102F884'
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         downsampling_scale = 2
 
     # Local
-    if host_name == 'lizuoyue.local' or host_name.startswith('staff-net-vpn-dhcp'):
+    if host_name.startswith('lizuoyue') or host_name.startswith('staff-net-vpn-dhcp'):
         import matplotlib
         import matplotlib.pyplot as plt
         matplotlib.rcParams['agg.path.chunksize'] = 10000
@@ -60,22 +60,17 @@ if __name__ == '__main__':
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[:1500]))):
 
-        # a = np.array(Image.open(depth_path % i))
-        # b = json.load(open(depth_path.replace('.pgm', '.json') % i))
-        # plt.imshow(np.array(b['depth_map']['data']).reshape((544, 1024)))
-        # plt.show()
-        # # a[cam_mask[..., 0] < 10] = 16000
-        # a[cam_mask[..., 0] > 10] = 0
-        # plt.imshow(a)
-        # plt.show()
-        # continue
-
-        if i < 209:
+        if i < 407 or i > 407:
             continue
 
-        # depth = np.array(Image.open(depth_path % i)).reshape((-1))
-        depth = json.load(open(depth_path.replace('.pgm', '.json') % i))
-        depth = np.array(depth['depth_map']['data'])
+        if False:
+            depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
+            depth = depth.reshape((-1))
+            depth_valid = (0.1 < depth) & (depth < MAX_Z)
+        else:
+            depth = json.load(open(depth_path.replace('.pgm', '.json') % i))
+            depth = np.array(depth['depth_map']['data'])
+            depth_valid = (0.1 < depth)
         depth_min = depth * (1 - EPSILON)
         depth_max = depth * (1 + EPSILON)
 
@@ -86,55 +81,75 @@ if __name__ == '__main__':
 
         cam_coord = mat_cam_to_world[:3, 3]
 
+        # Filter 1 - only consider points near camera
         idx =       (pc_coord[:, 0] > cam_coord[0] - CUBE)
         idx = idx & (pc_coord[:, 0] < cam_coord[0] + CUBE)
         idx = idx & (pc_coord[:, 1] > cam_coord[1] - CUBE)
         idx = idx & (pc_coord[:, 1] < cam_coord[1] + CUBE)
-
         pc_near_cam_coord = pc_coord[idx]
         pc_near_cam_color = pc_color[idx]
 
+        # Filter 2 - only consider points in front of camera
         pc_cam_coord = mat_world_to_cam[:3].dot(pc_near_cam_coord.T)
         idx = pc_cam_coord[-1] > 0
         pc_cam_coord = pc_cam_coord[:, idx]
         pc_cam_color = pc_near_cam_color[idx]
-        z_val = pc_cam_coord[-1]
+        pc_z = pc_cam_coord[-1].copy()
+        pc_dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
+        pc_cam_coord /= pc_dist
 
-        dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
-        pc_cam_coord /= dist
-        dist *= 0.815  # comparison should times what?
+        if False:
+            pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
 
-        # pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
-
-        # continue
         pc_cam_coord[-1] += xi
         pc_cam_coord /= pc_cam_coord[-1]
 
-        x, y, z = mat_cam_int.dot(pc_cam_coord)
-        x, y = np.round(x).astype(int), np.round(y).astype(int)
+        # Filter 3 - only consider points visible in the image
+        x, y, _ = mat_cam_int.dot(pc_cam_coord)
+        # x, y = np.round(x).astype(int), np.round(y).astype(int)
+        x, y = np.floor(x).astype(int), np.floor(y).astype(int)
         idx = ((x >= 0) & (x < img_size[0]) & (y >= 0) & (y < img_size[1])).nonzero()[0]
-        one_dim_idx = y[idx] * img_size[0] + x[idx]
+        x, y, pc_z, pc_dist = x[idx], y[idx], pc_z[idx], pc_dist[idx]
+        img_1d_idx = y * img_size[0] + x
 
-        valid = verify_distance(one_dim_idx, dist[idx])
-        one_dim_idx = one_dim_idx[valid]
-        idx = idx[valid]
+        # Filter 4 - only consider the closest point for each pixel
+        valid = verify_distance(img_1d_idx, pc_dist)
+        img_1d_idx = img_1d_idx[valid]
+        pc_z = pc_z[valid]
 
-        # aa, bb, cc = [], [], 100
-        # for coef in range(1,201):
-        #     valid = ((depth_min[one_dim_idx] < dist[idx]*coef/cc) & (dist[idx]*coef/cc < depth_max[one_dim_idx]))
-        #     aa.append(coef/cc)
-        #     bb.append(valid.mean())
-        # plt.plot(aa, bb)
-        # plt.show()
+        # Filter 5 - only consider point has a valid ground truth depth
+        has_depth = depth_valid[img_1d_idx]
+        img_1d_idx = img_1d_idx[has_depth]
+        pc_z = pc_z[has_depth]
+
+        if False:
+            fake_depth = depth * 0
+            fake_depth[img_1d_idx] = pc_z
+
+            gt_depth = depth * 0
+            gt_depth[img_1d_idx] = depth[img_1d_idx]
+
+            log_depth = np.log(pc_z / depth[img_1d_idx])
+            # show_log_depth = depth * 0
+            # show_log_depth[img_1d_idx] = log_depth
+            log_depth = ((np.clip(log_depth, -2, 3) + 2) / 5 * 255).astype(np.uint8)
+            log_depth = (cmap(log_depth) * 255).astype(np.uint8)
+            show_log_depth = np.zeros((depth.shape[0], 3), np.uint8)
+            show_log_depth[img_1d_idx] = log_depth[...,:3]
+
+            to_show = np.vstack([np.minimum(gt_depth, MAX_Z).reshape(img_size[::-1]), np.minimum(fake_depth, MAX_Z).reshape(img_size[::-1])])
+            plt.imshow(to_show)
+            plt.show()
+            plt.imshow(show_log_depth.reshape(img_size[::-1] + (-1,)))
+            plt.show()
+
+        # Filter 6 - only consider point has an accurate depth
+        # z axis times 0.91 result in higher accuracy
+        coef = 1.0
+        valid = (depth_min[img_1d_idx] < pc_z * coef) & (pc_z * coef < depth_max[img_1d_idx])
+        print(valid.mean(), valid.sum())
         # continue
         
-        valid = (depth_min[one_dim_idx] < dist[idx]) & (dist[idx] < depth_max[one_dim_idx])
-        print(valid.mean())
-
-        beishu = np.log(dist[idx] / (depth[one_dim_idx] + 1e-3))
-        beishu = ((np.clip(beishu, -5, 5) + 5) / 10 * 255).astype(np.uint8)
-        beishu = (cmap(beishu) * 255).astype(np.uint8)
-
         if False:
             fake_img = np.ones(img_size[::-1], np.uint8) * 255
             fake_img[cam_mask < 10] = 127
