@@ -11,7 +11,7 @@ if __name__ == '__main__':
         pc_str_lines = get_pc_nxstr(path + f'point_cloud_{i}.zip')
         random.shuffle(pc_str_lines)
         num = int(len(pc_str_lines) / 100)
-        with open(path.replace('.zip', '_sample_100.txt'), 'w') as f:
+        with open(path + f'point_cloud_{i}_sample_100.txt'), 'w') as f:
             for line in pc_str_lines[:num]:
                 f.write(line + '\n')
-        os.system(f'cd {path}; zip {path}_{i}_sample_100.zip {path}_{i}_sample_100.txt; rm *.txt; cd ../../../;')
+        os.system(f'cd {path}; zip point_cloud_{i}_sample_100.zip point_cloud_{i}_sample_100.txt; rm *.txt; cd ../../../;')
