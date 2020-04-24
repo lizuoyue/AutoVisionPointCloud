@@ -81,29 +81,29 @@ def get_normalized_points(num, dim, abs_axis=None):
         u[:, abs_axis] = np.abs(u[:, abs_axis])
     return u
 
-def verify_depth(img_idx, pc_depth, gt_depth=None):
+def verify_depth(img_idx, pc_depth, gt_depth):
     assert(img_idx.shape[0] == pc_depth.shape[0])
-    if gt_depth is not None:
-        assert(img_idx.max() < gt_depth.shape[0])
+    assert(not (pc_depth <= 0).any())
+    assert(img_idx.max() < gt_depth.shape[0])
     d = {}
-    for i in range(img_idx.shape[0]):
-        pixel = img_idx[i]
+    for i, (pixel, depth) in enumerate(zip(img_idx, pc_depth)):
         if pixel in d:
-            old_i = d[pixel]
-            if gt_depth is not None:
-                depth = gt_depth[pixel]
-                if np.abs(pc_depth[i] - depth) < np.abs(pc_depth[old_i] - depth):
-                    d[pixel] = i
-                else:
-                    pass
-            else:
-                if pc_depth[i] < pc_depth[old_i]:
-                    d[pixel] = i
-                else:
-                    pass
+            d[pixel].append((depth, i))
         else:
-            d[pixel] = i
-    li = [d[key] for key in d]
+            d[pixel] = [(depth, i)]
+
+    res = {}
+    for pixel in d:
+        min_d, _ = min(d[pixel])
+        max_d, _ = max(d[pixel])
+        gt = gt_depth[pixel]
+        if min_d * 0.99 < gt and gt < max_d  * 1.01:
+            li = [(np.abs(depth - gt), i) for depth, i in d[pixel]]
+            res[pixel] = min(li)[1]
+        else:
+            pass
+
+    li = [res[pixel] for pixel in res]
     res = np.zeros(img_idx.shape, np.bool)
     res[li] = True
     return res

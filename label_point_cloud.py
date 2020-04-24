@@ -164,7 +164,7 @@ if __name__ == '__main__':
             ])
             plt.figure(figsize=(20.48, 10.88))
             plt.imshow(to_show)
-            plt.savefig('res.pdf')
+            plt.savefig(f'res_{i}.pdf')
 
         # Filter 6 - only consider point has an accurate depth
         valid = (depth_min[img_1d_idx_has_gt_dep] < pc_z_has_gt_dep) & (pc_z_has_gt_dep < depth_max[img_1d_idx_has_gt_dep])
