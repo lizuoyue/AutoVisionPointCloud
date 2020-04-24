@@ -21,7 +21,7 @@ if __name__ == '__main__':
         matplotlib.use('agg')
         import matplotlib.pyplot as plt
         cam_int_path  =  'data/2018-08-10-Calibration-Data/camera_system_cal.json'
-        cam_loc_path  =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local.txt'
+        cam_loc_path  =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/T_world_local_quat.txt'
         cam_ext_path  =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_local_camera.txt'
         cam_msk_path  = f'data/2018-08-10-Calibration-Data/mask_{cam_name}_undist.png'
         pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_0.zip'
@@ -36,9 +36,9 @@ if __name__ == '__main__':
         import matplotlib.pyplot as plt
         from plyfile import PlyData, PlyElement
         matplotlib.rcParams['agg.path.chunksize'] = 10000
-        t = ''#'_sample_20'
+        t = '_sample_20'#''#
         cam_int_path  =  '../autovision_day_night_data/2018-08-10-Calibration-Data/camera_system_cal.json'
-        cam_loc_path  =  '../autovision_day_night_data/T_world_local.txt'
+        cam_loc_path  =  '../autovision_day_night_data/T_world_local_quat.txt'
         cam_ext_path  =  '../autovision_day_night_data/poses_T_local_camera.txt'
         cam_msk_path  = f'../autovision_day_night_data/2018-08-10-Calibration-Data/mask_{cam_name}_undist.png'
         pc_path       =  '../autovision_day_night_data/point_cloud/point_cloud_0_sample.zip'
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     #
     mat_cam_int, img_size, xi = get_cam_int_np_3x3(cam_int_path, cam_name, downsampling_scale)
-    mat_local_to_world = np.loadtxt(cam_loc_path)
+    mat_local_to_world = get_cam_ext_np_4x4(np.loadtxt(cam_loc_path))
     mat_world_to_local = np.linalg.inv(mat_local_to_world)
     cam_poses = get_cam_poses_nx7(cam_ext_path)
     cam_mask = np.array(Image.open(cam_msk_path).resize(img_size))
@@ -106,14 +106,14 @@ if __name__ == '__main__':
             pc_cam_coord = pc_cam_coord.T
             print(pc_cam_coord[:,:5])
 
-        if False: # local
+        if True: # local
             pc_cam_coord = np.loadtxt(pc_local_path % i)
             pc_cam_coord = mat_local_to_cam[:3, :3].dot(pc_cam_coord.T).T + mat_local_to_cam[:3, 3]
             # pc_cam_coord = mat_local_to_world[:3, :3].dot(pc_cam_coord.T).T + mat_local_to_world[:3, 3]
             pc_cam_coord = pc_cam_coord.T
             print(pc_cam_coord[:,:5])
 
-        # continue
+        continue
 
         idx = pc_cam_coord[-1] > 0
         pc_cam_coord = pc_cam_coord[:, idx]
