@@ -81,22 +81,32 @@ def get_normalized_points(num, dim, abs_axis=None):
         u[:, abs_axis] = np.abs(u[:, abs_axis])
     return u
 
-def verify_distance(img_idx, pc_dist):
-    assert(img_idx.shape[0] == pc_dist.shape[0])
+def verify_depth(img_idx, pc_depth, gt_depth=None):
+    assert(img_idx.shape[0] == pc_depth.shape[0])
+    if gt_depth is not None:
+        assert(img_idx.max() < gt_depth.shape[0])
     d = {}
-    for i, (idx, dist) in enumerate(list(zip(img_idx, pc_dist))):
-        if idx in d:
-            if dist < pc_dist[d[idx]]:
-                d[idx] = i
+    for i in range(img_idx.shape[0]):
+        pixel = img_idx[i]
+        if pixel in d:
+            old_i = d[pixel]
+            if gt_depth is not None:
+                depth = gt_depth[pixel]
+                if np.abs(pc_depth[i] - depth) < np.abs(pc_depth[old_i] - depth):
+                    d[pixel] = i
+                else:
+                    pass
+            else:
+                if pc_depth[i] < pc_depth[old_i]:
+                    d[pixel] = i
+                else:
+                    pass
         else:
-            d[idx] = i
+            d[pixel] = i
     li = [d[key] for key in d]
     res = np.zeros(img_idx.shape, np.bool)
     res[li] = True
     return res
 
-    unique_idx, inverse = np.unique(img_idx, return_inverse=True)
-    print(unique_idx.shape, inverse.shape, dist.shape)
-    quit()
 
 

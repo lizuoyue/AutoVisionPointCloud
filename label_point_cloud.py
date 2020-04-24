@@ -115,8 +115,7 @@ if __name__ == '__main__':
         pc_cam_coord = pc_cam_coord[:, idx]
         pc_cam_color = pc_near_cam_color[idx]
         pc_z = pc_cam_coord[-1].copy()
-        pc_dist = np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
-        pc_cam_coord /= pc_dist
+        pc_cam_coord /= np.sqrt(np.sum(pc_cam_coord * pc_cam_coord, axis=0))
 
         if False:
             pc_cam_coord = get_normalized_points(100000, 3, abs_axis=-1).T
@@ -128,11 +127,11 @@ if __name__ == '__main__':
         x, y, _ = mat_cam_int.dot(pc_cam_coord)
         x, y = np.floor(x).astype(int), np.floor(y).astype(int)
         idx = ((x >= 0) & (x < img_size[0]) & (y >= 0) & (y < img_size[1])).nonzero()[0]
-        x, y, pc_z, pc_dist, pc_cam_color = x[idx], y[idx], pc_z[idx], pc_dist[idx], pc_cam_color[idx]
+        x, y, pc_z, pc_cam_color = x[idx], y[idx], pc_z[idx], pc_cam_color[idx]
         img_1d_idx = y * img_size[0] + x
 
         # Filter 4 - only consider the closest point for each pixel
-        valid = verify_distance(img_1d_idx, pc_dist)
+        valid = verify_depth(img_1d_idx, pc_z, depth)
         img_1d_idx = img_1d_idx[valid]
         pc_z = pc_z[valid]
         pc_cam_color = pc_cam_color[valid]
