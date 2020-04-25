@@ -22,10 +22,10 @@ if __name__ == '__main__':
         cmap = matplotlib.cm.get_cmap('viridis')
         cam_msk_path  = f'data/2018-10-08-Calibration-Data/mask_{cam_name}.png'
         cam_int_path  =  'data/2018-10-08-Calibration-Data/camera_system_cal.json'
-        cam_ext_path  =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_world_camera.txt'
+        cam_ext_path  =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
         pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_0.zip'
-        img_path      =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_fisheye/DEV_000F3102F884/%05d.png'
-        depth_path    =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/DEV_000F3102F884/%05d.pgm'
+        img_path      =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/DEV_000F3102F884/%05d.png'
+        depth_path    =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_depth/DEV_000F3102F884/%05d.pgm'
         downsampling_scale = 2
 
     # Local
@@ -36,12 +36,10 @@ if __name__ == '__main__':
         matplotlib.rcParams['agg.path.chunksize'] = 10000
         cam_msk_path  = f'../autovision_day_night_data/2018-10-08-Calibration-Data/mask_{cam_name}.png'
         cam_int_path  =  '../autovision_day_night_data/2018-10-08-Calibration-Data/camera_system_cal.json'
-        cam_ext_path  =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_world_camera.txt'
+        cam_ext_path  =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
         pc_path       =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_cloud/point_cloud_0_sample_100.zip'
-        img_path      =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_fisheye/%05d.png'
-        depth_path    =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/%05d.pgm'
-        2018-11-01-Lim-Chu-Kang-Run-3-Night
-        2018-10-18-Lim-Chu-Kang-Run-1-Day
+        img_path      =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/%05d.png'
+        depth_path    =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_depth/%05d.pgm'
         downsampling_scale = 2
 
     #
@@ -59,9 +57,9 @@ if __name__ == '__main__':
 
     #
     # for i, pose in tqdm.tqdm(list(enumerate(cam_poses[:1500]))):
-    for i, pose in list(enumerate(cam_poses[:1500])):
+    for i, pose in list(enumerate(cam_poses[:5000])):
 
-        if i < 400 or i > 400:
+        if i < 3350 or i > 3350:
             continue
 
         if False:
