@@ -11,7 +11,7 @@ from utils import *
 
 if __name__ == '__main__':
     #
-    CUBE, MAX_Z, EPSILON = 128, 50, 0.001
+    CUBE, MAX_Z, EPSILON = 128, 50, 0.01
     host_name = socket.gethostname()
     cam_name = 'DEV_000F3102F884'
 
