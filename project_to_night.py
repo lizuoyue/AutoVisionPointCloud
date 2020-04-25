@@ -34,8 +34,8 @@ if __name__ == '__main__':
         import matplotlib.pyplot as plt
         cmap = matplotlib.cm.get_cmap('viridis')
         matplotlib.rcParams['agg.path.chunksize'] = 10000
-        cam_msk_path  = f'../autovision_day_night_data/2018-10-08-Calibration-Data/mask_{cam_name}.png'
-        cam_int_path  =  '../autovision_day_night_data/2018-10-08-Calibration-Data/camera_system_cal.json'
+        cam_msk_path  = f'../autovision_day_night_data/2018-10-22-Calibration-Data/mask_{cam_name}.png'
+        cam_int_path  =  '../autovision_day_night_data/2018-10-22-Calibration-Data/camera_system_cal.json'
         cam_ext_path  =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
         pc_path       =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_cloud/point_cloud_0_sample_100.zip'
         img_path      =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/%05d.png'
