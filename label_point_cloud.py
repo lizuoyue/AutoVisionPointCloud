@@ -17,9 +17,9 @@ if __name__ == '__main__':
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
-        import matplotlib
-        matplotlib.use('agg')
+        import matplotlib; matplotlib.use('agg')
         import matplotlib.pyplot as plt
+        cmap = matplotlib.cm.get_cmap('viridis')
         cam_msk_path  = f'data/2018-10-08-Calibration-Data/mask_{cam_name}.png'
         cam_int_path  =  'data/2018-10-08-Calibration-Data/camera_system_cal.json'
         cam_ext_path  =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/poses_T_world_camera.txt'
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if host_name.startswith('lizuoyue') or host_name.startswith('staff-net-vpn-dhcp'):
         import matplotlib
         import matplotlib.pyplot as plt
-        from plyfile import PlyData, PlyElement
+        cmap = matplotlib.cm.get_cmap('viridis')
         matplotlib.rcParams['agg.path.chunksize'] = 10000
         cam_msk_path  = f'../autovision_day_night_data/2018-10-08-Calibration-Data/mask_{cam_name}.png'
         cam_int_path  =  '../autovision_day_night_data/2018-10-08-Calibration-Data/camera_system_cal.json'
@@ -54,7 +54,6 @@ if __name__ == '__main__':
 
     #
     np.set_printoptions(suppress=True)
-    cmap = matplotlib.cm.get_cmap('bwr')
 
     #
     # for i, pose in tqdm.tqdm(list(enumerate(cam_poses[:1500]))):
@@ -162,9 +161,11 @@ if __name__ == '__main__':
                 np.hstack([np.minimum(  gt_depth, MAX_Z).reshape(img_size[::-1])] * 2),
                 np.hstack([np.minimum(fake_depth, MAX_Z).reshape(img_size[::-1]), np.minimum(fake_depth_has_gt_dep, MAX_Z).reshape(img_size[::-1])]),
             ])
-            plt.figure(figsize=(20.48, 10.88))
-            plt.imshow(to_show)
-            plt.savefig(f'res_{i}.pdf')
+            # plt.figure(figsize=(20.48, 10.88))
+            # plt.imshow(to_show)
+            # plt.savefig(f'res_{i}.pdf')
+            to_show = (cmap((to_show - to_show.min()) / (to_show.max() - to_show.min())) * 255).astype(np.uint8)
+            Image.fromarray(to_show).save('fake_depth_%05d_%02d.png' % (i, CUBE))
 
         # Filter 6 - only consider point has an accurate depth
         valid = (depth_min[img_1d_idx_has_gt_dep] < pc_z_has_gt_dep) & (pc_z_has_gt_dep < depth_max[img_1d_idx_has_gt_dep])
