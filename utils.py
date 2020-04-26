@@ -81,7 +81,7 @@ def get_normalized_points(num, dim, abs_axis=None):
         u[:, abs_axis] = np.abs(u[:, abs_axis])
     return u
 
-def verify_depth(img_idx, pc_depth, gt_depth):
+def verify_depth(img_idx, pc_depth, gt_depth, epsilon=0.01):
     assert(img_idx.shape[0] == pc_depth.shape[0])
     assert(not (pc_depth <= 0).any())
     assert(img_idx.max() < gt_depth.shape[0])
@@ -97,7 +97,7 @@ def verify_depth(img_idx, pc_depth, gt_depth):
         min_d, _ = min(d[pixel])
         max_d, _ = max(d[pixel])
         gt = gt_depth[pixel]
-        if min_d * 0.99 < gt and gt < max_d  * 1.01:
+        if min_d * (1 - epsilon) < gt and gt < max_d * (1 + epsilon):
             li = [(np.abs(depth - gt), i) for depth, i in d[pixel]]
             res[pixel] = min(li)[1]
         else:
