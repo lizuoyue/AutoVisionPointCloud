@@ -126,25 +126,34 @@ if __name__ == '__main__':
         # Get image 1D index
         img_1d_idx = y * img_size[0] + x
 
-        toc = time.time()
-        if SHOW_TIME:
-            print('Computing part A costs %.3lf seconds.' % (toc - tic))
-
-        # Filter 4 - only choose one point for each pixel
-        tic = time.time()
-        idx = verify_depth(img_1d_idx, pc_z, depth)
-        pc_z = pc_z[idx]
-        img_1d_idx = img_1d_idx[idx]
-        pc_cam_index = pc_cam_index[idx]
-        toc = time.time()
-        if SHOW_TIME:
-            print('Verifying depth costs %.3lf seconds.' % (toc - tic))
-
-        # Filter 5 - only consider a point which has a valid ground truth depth
+        # Filter 4 - only consider a point which has a valid ground truth depth
         idx = depth_valid[img_1d_idx]
         pc_z = pc_z[idx]
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
+
+        # Filter 5 - only consider a point which has an accurate depth
+        idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
+        pc_z = pc_z[idx]
+        img_1d_idx = img_1d_idx[idx]
+        pc_cam_index = pc_cam_index[idx]
+
+        rat = np.unique(img_1d_idx).shape[0] / img_1d_idx.shape[0]
+        rate = np.unique(img_1d_idx).shape[0] / depth_valid.sum()
+
+        toc = time.time()
+        if SHOW_TIME:
+            print('Computing costs %.3lf seconds.' % (toc - tic))
+
+        # # Filter 4 - only choose one point for each pixel
+        # tic = time.time()
+        # idx = verify_depth(img_1d_idx, pc_z, depth)
+        # pc_z = pc_z[idx]
+        # img_1d_idx = img_1d_idx[idx]
+        # pc_cam_index = pc_cam_index[idx]
+        # toc = time.time()
+        # if SHOW_TIME:
+        #     print('Verifying depth costs %.3lf seconds.' % (toc - tic))
 
         if True:
             tic = time.time()
@@ -161,15 +170,9 @@ if __name__ == '__main__':
             if SHOW_TIME:
                 print('Creating fake depth costs %.3lf seconds.' % (toc - tic))
 
-        # Filter 6 - only consider a point which has an accurate depth
-        idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
-        pc_z = pc_z[idx]
-        img_1d_idx = img_1d_idx[idx]
-        pc_cam_index = pc_cam_index[idx]
-
         # Write log and result
         tic = time.time()
-        f_log.write('%d %.6lf %d\n' % (i + FRAME_FROM, idx.mean(), idx.sum()))
+        f_log.write('%d %.6lf\n' % (i + FRAME_FROM, rate))
         f_log.flush()
         with open('result/%05d.txt' % (i + FRAME_FROM), 'w') as f_res:
             f_res.write(f'{WHICH_PC[i]}\n')

@@ -117,4 +117,3 @@ def verify_depth(img_idx, pc_depth, gt_depth, epsilon=0.01):
     return res
 
 
-
