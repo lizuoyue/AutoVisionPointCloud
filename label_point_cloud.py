@@ -64,11 +64,9 @@ if __name__ == '__main__':
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
-        if i in [7702]:
+        if i in SEP:
             pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i]))
             pc_index = np.arange(pc_coord.shape[0])
-        else:
-            continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -90,8 +88,8 @@ if __name__ == '__main__':
         idx = idx & (pc_coord[:, 0] < cam_loc[0] + CUBE)
         idx = idx & (pc_coord[:, 1] > cam_loc[1] - CUBE)
         idx = idx & (pc_coord[:, 1] < cam_loc[1] + CUBE)
-        pc_cam_coord = pc_coord[idx]
-        pc_cam_index = pc_index[idx]
+        pc_cam_coord = pc_coord[idx].copy()
+        pc_cam_index = pc_index[idx].copy()
 
         # Rotate to the camera coordinate system
         pc_cam_coord = mat_world_to_cam[:3].dot(pc_cam_coord.T)
