@@ -64,9 +64,11 @@ if __name__ == '__main__':
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
-        if i in SEP:
+        if i in [7702]:
             pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i]))
             pc_index = np.arange(pc_coord.shape[0])
+        else:
+            continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
