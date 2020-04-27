@@ -21,7 +21,7 @@ if __name__ == '__main__':
     WHICH_PC = np.cumsum(WHICH_PC)
     assert(PC_NUM_SEP == (len(SEP) - 1))
     assert((FRAME_TO - FRAME_FROM) == SEP[-1])
-    SHOW_TIME = True
+    SHOW_TIME = False
 
     host_name = socket.gethostname()
 
@@ -68,9 +68,6 @@ if __name__ == '__main__':
         if i in SEP:
             pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
             pc_index = np.arange(pc_coord.shape[0])
-
-        if i != 400 - FRAME_FROM:
-            continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -138,22 +135,11 @@ if __name__ == '__main__':
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
 
-        rat = np.unique(img_1d_idx).shape[0] / img_1d_idx.shape[0]
         rate = np.unique(img_1d_idx).shape[0] / depth_valid.sum()
 
         toc = time.time()
         if SHOW_TIME:
             print('Computing costs %.3lf seconds.' % (toc - tic))
-
-        # # Filter 4 - only choose one point for each pixel
-        # tic = time.time()
-        # idx = verify_depth(img_1d_idx, pc_z, depth)
-        # pc_z = pc_z[idx]
-        # img_1d_idx = img_1d_idx[idx]
-        # pc_cam_index = pc_cam_index[idx]
-        # toc = time.time()
-        # if SHOW_TIME:
-        #     print('Verifying depth costs %.3lf seconds.' % (toc - tic))
 
         if True:
             tic = time.time()
@@ -190,8 +176,6 @@ if __name__ == '__main__':
             Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
-
-        break
 
     f_log.close()
 
