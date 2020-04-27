@@ -69,6 +69,9 @@ if __name__ == '__main__':
             pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
             pc_index = np.arange(pc_coord.shape[0])
 
+        if i != 400 - FRAME_FROM:
+            continue
+
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
             depth = depth.reshape((-1))
@@ -184,6 +187,8 @@ if __name__ == '__main__':
             Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
+
+        break
 
     f_log.close()
 
