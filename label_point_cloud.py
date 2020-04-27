@@ -57,16 +57,14 @@ if __name__ == '__main__':
     cam_mask = np.array(Image.open(cam_msk_path).resize(img_size))[..., 0]
 
     #
-    pc_coords = [pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % i))[0] for i in range(1)]#PC_NUM_SEP
+    pc_coords = [pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % i))[0] for i in range(PC_NUM_SEP)]
 
     #
     np.set_printoptions(suppress=True)
+    f_log = open('log.out', 'a')
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
-
-        if i not in [(j*100-77) for j in range(4, 14)] + [1340]:
-            continue
 
         pc_coord = pc_coords[WHICH_PC[i]]
         pc_index = np.arange(pc_coord.shape[0])
@@ -131,7 +129,7 @@ if __name__ == '__main__':
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
 
-        if True:
+        if False:
             gt_depth = depth
             fake_depth = depth * 0
             fake_depth[img_1d_idx] = pc_z
@@ -147,11 +145,18 @@ if __name__ == '__main__':
         pc_z = pc_z[idx]
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
-        print(idx.mean(), idx.sum())
 
-        if True:
+        # Write log and result
+        f_log.write('%d %.6lf %d' % (i + FRAME_FROM, idx.mean(), idx.sum()))
+        with open(f'res_{i + FRAME_FROM}.txt', 'w') as f_res:
+            f_res.write(f'{WHICH_PC[i]}\n')
+            for a, b in img_1d_idx, pc_cam_index:
+                f_res.write(f'{a} {b}\n')
+
+        if False:
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM))).reshape((-1))
             fake_img[img_1d_idx] = 0
             Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img_%05d.png' % (i + FRAME_FROM))
 
+    f_log.close()
 
