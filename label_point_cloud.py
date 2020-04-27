@@ -67,6 +67,9 @@ if __name__ == '__main__':
             pc_coord, _ = pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % WHICH_PC[i]))
             pc_index = np.arange(pc_coord.shape[0])
 
+        if i != 400 - FRAME_FROM:
+            continue
+
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
             depth = depth.reshape((-1))
@@ -127,7 +130,7 @@ if __name__ == '__main__':
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
 
-        if False:
+        if True:
             gt_depth = depth
             fake_depth = depth * 0
             fake_depth[img_1d_idx] = pc_z
@@ -148,10 +151,10 @@ if __name__ == '__main__':
         f_log.write('%d %.6lf %d' % (i + FRAME_FROM, idx.mean(), idx.sum()))
         with open(f'res_{i + FRAME_FROM}.txt', 'w') as f_res:
             f_res.write(f'{WHICH_PC[i]}\n')
-            for a, b in img_1d_idx, pc_cam_index:
+            for a, b in zip(img_1d_idx, pc_cam_index):
                 f_res.write(f'{a} {b}\n')
 
-        if False:
+        if True:
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM))).reshape((-1))
             fake_img[img_1d_idx] = 0
             Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img_%05d.png' % (i + FRAME_FROM))
