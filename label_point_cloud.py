@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     #
     np.set_printoptions(suppress=True)
-    f_log = open('log.out', 'a')
+    log = open('log.out', 'w')
     os.system('mkdir fake_img fake_depth result')
 
     #
@@ -158,13 +158,9 @@ if __name__ == '__main__':
 
         # Write log and result
         tic = time.time()
-        f_log.write('%d %.6lf\n' % (i + FRAME_FROM, rate))
-        f_log.flush()
-        with open('result/%05d.txt' % (i + FRAME_FROM), 'w') as f_res:
-            f_res.write(f'{WHICH_PC[i]}\n')
-            for a, b in zip(img_1d_idx, pc_cam_index):
-                f_res.write(f'{a} {b}\n')
-                f_res.flush()
+        log.write('%d %.6lf\n' % (i + FRAME_FROM, rate))
+        log.flush()
+        np.savez_compressed('result/%05d.npz' % (i + FRAME_FROM), which_pc=WHICH_PC[i], img_1d_idx=img_1d_idx, pc_cam_index=pc_cam_index)
         toc = time.time()
         if SHOW_TIME:
             print('Writing to file costs %.3lf seconds.' % (toc - tic))
@@ -177,5 +173,5 @@ if __name__ == '__main__':
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
 
-    f_log.close()
+    log.close()
 
