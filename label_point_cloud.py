@@ -57,17 +57,15 @@ if __name__ == '__main__':
     cam_mask = np.array(Image.open(cam_msk_path).resize(img_size))[..., 0]
 
     #
-    pc_coords = [pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % i))[0] for i in range(PC_NUM_SEP)]
-
-    #
     np.set_printoptions(suppress=True)
     f_log = open('log.out', 'a')
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
-        pc_coord = pc_coords[WHICH_PC[i]]
-        pc_index = np.arange(pc_coord.shape[0])
+        if i in SEP:
+            pc_coord, _ = pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % WHICH_PC[i]))
+            pc_index = np.arange(pc_coord.shape[0])
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
