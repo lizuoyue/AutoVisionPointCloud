@@ -59,16 +59,14 @@ if __name__ == '__main__':
     #
     np.set_printoptions(suppress=True)
     f_log = open('log.out', 'a')
+    os.system('mkdir fake_img fake_depth result')
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
         if i in SEP:
-            pc_coord, _ = pc_str_lines2nxXYZ1_and_RGB(get_pc_nxstr(pc_path % WHICH_PC[i]))
+            pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i]))
             pc_index = np.arange(pc_coord.shape[0])
-
-        if i != 400 - FRAME_FROM:
-            continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -139,7 +137,7 @@ if __name__ == '__main__':
                 np.minimum(fake_depth, MAX_Z).reshape(img_size[::-1]),
             ])
             to_show = (cmap((to_show - to_show.min()) / (to_show.max() - to_show.min())) * 255).astype(np.uint8)
-            Image.fromarray(to_show).save('fake_depth_%05d.png' % (i + FRAME_FROM))
+            Image.fromarray(to_show).save('fake_depth/%05d.png' % (i + FRAME_FROM))
 
         # Filter 6 - only consider a point which has an accurate depth
         idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
@@ -149,7 +147,7 @@ if __name__ == '__main__':
 
         # Write log and result
         f_log.write('%d %.6lf %d' % (i + FRAME_FROM, idx.mean(), idx.sum()))
-        with open(f'res_{i + FRAME_FROM}.txt', 'w') as f_res:
+        with open('result/%05d.txt' % (i + FRAME_FROM), 'w') as f_res:
             f_res.write(f'{WHICH_PC[i]}\n')
             for a, b in zip(img_1d_idx, pc_cam_index):
                 f_res.write(f'{a} {b}\n')
@@ -157,7 +155,7 @@ if __name__ == '__main__':
         if True:
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM))).reshape((-1))
             fake_img[img_1d_idx] = 0
-            Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img_%05d.png' % (i + FRAME_FROM))
+            Image.fromarray(fake_img.reshape(img_size[::-1])).save('fake_img/%05d.png' % (i + FRAME_FROM))
 
     f_log.close()
 

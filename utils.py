@@ -73,6 +73,14 @@ def pc_str_lines2nxXYZ1_and_RGB(pc_str_lines, show_time=True):
         print('Creating point cloud numpy array costs %.3lf seconds.' % (toc - tic))
     return res[:, :4], res[:, 4:].astype(np.uint8)
 
+def pc_str_lines2nxXYZ1(pc_str_lines, show_time=True):
+    tic = time.time()
+    res = np.array([to_float_li(pc_str_line)[:4] for pc_str_line in pc_str_lines])
+    toc = time.time()
+    if show_time:
+        print('Creating point cloud numpy array costs %.3lf seconds.' % (toc - tic))
+    return res[:, :4]
+
 def get_normalized_points(num, dim, abs_axis=None):
     u = np.random.normal(size=(num, dim))
     u_len = np.sqrt(np.sum(u * u, axis=1))
