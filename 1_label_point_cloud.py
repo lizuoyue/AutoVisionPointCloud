@@ -85,10 +85,6 @@ if __name__ == '__main__':
         pc_label_count = np.zeros((pc_num, NUM_CLASSES), np.int32)
         for i in tqdm.tqdm(list(range(a, b))):
             fid = i + FRAME_FROM
-
-            if i < 390 or i > 410:
-                continue
-
             sem = np.array(Image.open(sem_path % fid)).reshape((-1))
             d = np.load(mapping_path % fid)
             assert(d['which_pc'] == which_pc)
