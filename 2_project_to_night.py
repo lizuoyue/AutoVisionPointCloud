@@ -74,9 +74,6 @@ if __name__ == '__main__':
             assert(pc_label.shape[0] == pc_coord.shape[0])
             assert(pc_color.shape[0] == pc_coord.shape[0])
 
-        if i + FRAME_FROM != 3350:
-            continue
-
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
             depth = depth.reshape((-1))
@@ -136,6 +133,7 @@ if __name__ == '__main__':
         pc_z = pc_z[idx]
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
+        num_pixel_has_points = np.unique(img_1d_idx).shape[0]
 
         # Filter 5 - only consider a point which has an accurate depth
         idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
@@ -143,7 +141,10 @@ if __name__ == '__main__':
         img_1d_idx = img_1d_idx[idx]
         pc_cam_index = pc_cam_index[idx]
 
-        rate = np.unique(img_1d_idx).shape[0] / depth_valid.sum()
+        num_pixel_has_acc_points = np.unique(img_1d_idx).shape[0]
+
+        rate_point_acc = num_pixel_has_acc_points / num_pixel_has_points
+        rate_pixel_acc = num_pixel_has_acc_points / depth_valid.sum()
 
         toc = time.time()
         if SHOW_TIME:
@@ -165,7 +166,7 @@ if __name__ == '__main__':
                 print('Creating fake depth costs %.3lf seconds.' % (toc - tic))
 
         # Write log and result
-        log.write('%d %.6lf\n' % (i + FRAME_FROM, rate))
+        log.write('%d %.6lf\n' % (i + FRAME_FROM, rate_point_acc, rate_pixel_acc))
         log.flush()
 
         if True:
