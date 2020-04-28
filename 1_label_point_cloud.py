@@ -33,7 +33,7 @@ if __name__ == '__main__':
         pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
         img_path      = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_fisheye/{CAM_NAME}/%05d.png'
         depth_path    = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/{CAM_NAME}/%05d.pgm'
-        sem_path      = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_semantics/%05d.png'
+        sem_path      = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_semantics/{CAM_NAME}/%05d.png'
         mapping_path  =  'result/%05d.npz'
         downsampling_scale = 2
         pc_size = [59050601, 59677974, 51778606, 63369535, 53160322, 49842875, 56162369, 63787850, 77742044]
