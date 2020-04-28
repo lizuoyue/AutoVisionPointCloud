@@ -14,4 +14,5 @@ if __name__ == '__main__':
         with open(path + f'point_cloud_{i}_sample_100.txt', 'w') as f:
             for line in pc_str_lines[:num]:
                 f.write(line + '\n')
-        os.system(f'cd {path}; zip point_cloud_{i}_sample_100.zip point_cloud_{i}_sample_100.txt; rm *.txt; cd ../../../;')
+        # os.system(f'cd {path}; zip point_cloud_{i}_sample_100.zip point_cloud_{i}_sample_100.txt; rm *.txt; cd ../../../;')
+        break
