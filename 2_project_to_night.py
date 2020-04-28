@@ -172,7 +172,7 @@ if __name__ == '__main__':
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
             fake_img[img_1d_idx] = pc_color[pc_cam_index]
-            Image.fromarray(fake_img.reshape(img_size[::-1])).save('night_semantics/%05d.png' % (i + FRAME_FROM))
+            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('night_semantics/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
 
