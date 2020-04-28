@@ -21,7 +21,7 @@ if __name__ == '__main__':
     WHICH_PC = np.cumsum(WHICH_PC)
     assert(PC_NUM_SEP == (len(SEP) - 1))
     assert((FRAME_TO - FRAME_FROM) == SEP[-1])
-    SHOW_TIME = False
+    SHOW_TIME = True
 
     host_name = socket.gethostname()
 
@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
         if True:
             tic = time.time()
-            fake_img = np.array(Image.open(img_path % (i + FRAME_FROM))).reshape((-1))
+            fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
             fake_img[img_1d_idx] = pc_color[pc_cam_index]
             Image.fromarray(fake_img.reshape(img_size[::-1])).save('night_semantics/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
