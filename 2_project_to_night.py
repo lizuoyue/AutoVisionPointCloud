@@ -177,7 +177,5 @@ if __name__ == '__main__':
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
 
-        break
-
     log.close()
 
