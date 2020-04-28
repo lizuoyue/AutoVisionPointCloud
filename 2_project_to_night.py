@@ -166,7 +166,7 @@ if __name__ == '__main__':
                 print('Creating fake depth costs %.3lf seconds.' % (toc - tic))
 
         # Write log and result
-        log.write('%d %.6lf\n' % (i + FRAME_FROM, rate_point_acc, rate_pixel_acc))
+        log.write('%d %.6lf %.6lf\n' % (i + FRAME_FROM, rate_point_acc, rate_pixel_acc))
         log.flush()
 
         if True:
