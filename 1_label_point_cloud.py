@@ -13,12 +13,10 @@ if __name__ == '__main__':
 
     # Day init
     CAM_NAME = 'DEV_000F3102F884'
-    CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.001
     SEP = [0, 1341, 2512, 3482, 4700, 5692, 6641, 7702, 8967, 9988]
     FRAME_FROM, FRAME_TO = 77, 10065
-    assert(PC_NUM_SEP == (len(SEP) - 1))
     assert((FRAME_TO - FRAME_FROM) == SEP[-1])
-    SHOW_TIME = False
+    NUM_CLASSES = 15
 
     host_name = socket.gethostname()
 
@@ -61,20 +59,29 @@ if __name__ == '__main__':
     #
     for which_pc, (a, b) in enumerate(zip(SEP[:-1], SEP[1:])):
         pc_num = pc_size[which_pc]
-        pc_label = [[] for _ in range(pc_num)]
+        pc_label_count = np.zeros((pc_num, NUM_CLASSES), np.int32)
         for i in tqdm.tqdm(list(range(a, b))):
             fid = i + FRAME_FROM
+
+            if fid < 390 or fid > 410:
+                continue
+
             sem = np.array(Image.open(sem_path % fid)).reshape((-1))
             d = np.load(mapping_path % fid)
             assert(d['which_pc'] == which_pc)
             pc_idx = d['pc_cam_index']
             pc_sem = sem[d['img_1d_idx']]
+            sel = pc_sem < 255
+            pc_idx = pc_idx[sel]
+            pc_sem = pc_sem[sel]
             for pci, pcs in zip(pc_idx, pc_sem):
-                if pcs < 255:
-                    pc_label[pci].append(pcs)
-        for li in pc_label:
-            if len(li) > 1:
-                print(li)
+                pc_label_count[pci, pcs] += 1
+
+        pc_label = np.argmax(pc_label_count, axis=-1)
+        pc_count = np.sum(pc_label_count, axis=-1)
+        pc_label[pc_count == 0] = 255
+
+        np.savez_compressed('pc_label_%d.npz' % which_pc, label=pc_label)
         break
 
 
