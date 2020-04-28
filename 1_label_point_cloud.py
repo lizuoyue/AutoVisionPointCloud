@@ -62,10 +62,8 @@ if __name__ == '__main__':
     for which_pc, (a, b) in enumerate(zip(SEP[:-1], SEP[1:])):
         pc_num = pc_size[which_pc]
         pc_label = [[] for _ in range(pc_num)]
-        for i in range(a, b):
+        for i in tqdm.tqdm(list(range(a, b))):
             fid = i + FRAME_FROM
-            if fid != 400:
-                continue
             sem = np.array(Image.open(sem_path % fid)).reshape((-1))
             d = np.load(mapping_path % fid)
             assert(d['which_pc'] == which_pc)
@@ -75,7 +73,7 @@ if __name__ == '__main__':
                 if pcs < 255:
                     pc_label[pci].append(pcs)
         for li in pc_label:
-            if li:
+            if len(li) > 1:
                 print(li)
         break
 
