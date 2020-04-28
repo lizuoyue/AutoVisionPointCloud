@@ -9,6 +9,28 @@ import tqdm
 import socket
 from utils import *
 
+def create_autovision_simple_label_colormap():
+    colormap = np.zeros((256, 3), dtype=np.uint8)
+    _PALETTE = np.array(
+        [[90, 120, 150], # Barrier
+        [70, 70, 70], # Building
+        [0, 0, 142], # Car
+        [152, 251, 152], # Terrain
+        [0, 60, 100], # Heavy Vehicle
+        [119, 11, 32], # Motorcycle
+        [128, 64, 128], # Paved Road
+        [170, 170, 170], # Pedestrian Area
+        [220, 20, 60], # Person
+        [250, 170, 30], # Pole Object
+        [70, 130, 180], # Sky
+        [220, 180, 50], # Unpaved Road
+        [107, 142, 35], # Vegetation
+        [0, 170, 30], # Water
+        [255, 255, 255]], # Ignored Object
+    dtype=np.uint8)
+    colormap[:15,:] = _PALETTE
+    return colormap#.flatten()
+
 if __name__ == '__main__':
 
     # Day init
@@ -19,6 +41,7 @@ if __name__ == '__main__':
     NUM_CLASSES = 15
 
     host_name = socket.gethostname()
+    colormap = create_autovision_simple_label_colormap()
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
@@ -63,7 +86,7 @@ if __name__ == '__main__':
         for i in tqdm.tqdm(list(range(a, b))):
             fid = i + FRAME_FROM
 
-            if fid < 390 or fid > 410:
+            if i < 390 or i > 410:
                 continue
 
             sem = np.array(Image.open(sem_path % fid)).reshape((-1))
@@ -81,7 +104,7 @@ if __name__ == '__main__':
         pc_count = np.sum(pc_label_count, axis=-1)
         pc_label[pc_count == 0] = 255
 
-        np.savez_compressed('pc_label_%d.npz' % which_pc, label=pc_label)
+        np.savez_compressed('pc_label_%d.npz' % which_pc, label=pc_label, color=colormap[pc_label])
         break
 
 
