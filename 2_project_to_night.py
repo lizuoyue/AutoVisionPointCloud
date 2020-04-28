@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # Day init
     CAM_NAME = 'DEV_000F3102F884'
-    CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.001
+    CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.01
     SEP = [0, 1780, 3404, 4956, 6683, 8424, 10000, 11534, 13122, 14434]
     FRAME_FROM, FRAME_TO = 2833, 17267
     WHICH_PC = np.zeros((SEP[-1]), np.int32)
