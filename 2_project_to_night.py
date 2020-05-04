@@ -74,6 +74,9 @@ if __name__ == '__main__':
             assert(pc_label.shape[0] == pc_coord.shape[0])
             assert(pc_color.shape[0] == pc_coord.shape[0])
 
+        if i + FRAME_FROM != 3400:
+            continue
+
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
             depth = depth.reshape((-1))
