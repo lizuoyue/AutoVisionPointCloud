@@ -130,21 +130,29 @@ if __name__ == '__main__':
         pc_z = pc_z[idx]
         pc_cam_index = pc_cam_index[idx]
 
+        # Sort?
+        order = np.argsort(pc_z)[::-1]
+        x, y = x[order], y[order]
+        pc_z = pc_z[order]
+        pc_cam_index = pc_cam_index[order]
+
         # Get image 1D index
         img_1d_idx = y * img_size[0] + x
 
         # Filter 4 - only consider a point which has a valid ground truth depth
-        idx = depth_valid[img_1d_idx]
-        pc_z = pc_z[idx]
-        img_1d_idx = img_1d_idx[idx]
-        pc_cam_index = pc_cam_index[idx]
+        if False:
+            idx = depth_valid[img_1d_idx]
+            pc_z = pc_z[idx]
+            img_1d_idx = img_1d_idx[idx]
+            pc_cam_index = pc_cam_index[idx]
         num_pixel_has_points = np.unique(img_1d_idx).shape[0]
 
         # Filter 5 - only consider a point which has an accurate depth
-        idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
-        pc_z = pc_z[idx]
-        img_1d_idx = img_1d_idx[idx]
-        pc_cam_index = pc_cam_index[idx]
+        if False:
+            idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
+            pc_z = pc_z[idx]
+            img_1d_idx = img_1d_idx[idx]
+            pc_cam_index = pc_cam_index[idx]
 
         num_pixel_has_acc_points = np.unique(img_1d_idx).shape[0]
 
