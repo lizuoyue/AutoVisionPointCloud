@@ -17,5 +17,4 @@ if __name__ == '__main__':
         pc[:,3] = 1
         li.append(mat.dot(pc[:num,:4].T).T)
     pc = np.concatenate(li)
-    numpy.savetxt('merge.txt', pc, fmt='%.12f', delimiter=';')
-    
+    np.savetxt('merge.txt', pc, fmt='%.12f', delimiter=';')
