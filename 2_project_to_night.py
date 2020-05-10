@@ -92,7 +92,7 @@ if __name__ == '__main__':
         depth_min = depth * (1 - EPSILON)
         depth_max = depth * (1 + EPSILON)
 
-        pose = np.array([0.465872010462144 -0.517772394781267 0.550068720893017 -0.460759611256837 356270.50130326 158611.501875941 34.2677767156021])
+        pose = np.array([0.465872010462144, -0.517772394781267, 0.550068720893017, -0.460759611256837, 356270.50130326, 158611.501875941, 34.2677767156021])
 
         mat_cam_to_world = get_cam_ext_np_4x4(pose)
         mat_world_to_cam = np.linalg.inv(mat_cam_to_world)
