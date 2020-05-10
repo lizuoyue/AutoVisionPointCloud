@@ -101,7 +101,5 @@ if __name__ == '__main__':
         pc_label[pc_count == 0] = 255
 
         np.savez_compressed('pc_label_%d.npz' % which_pc, label=pc_label, color=colormap[pc_label])
-        break
-
 
 
