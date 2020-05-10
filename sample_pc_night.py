@@ -5,7 +5,7 @@ import tqdm
 
 if __name__ == '__main__':
 
-    pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/%d.txt'
+    pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
     mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
     random.seed(7)
     for i in tqdm.tqdm(list(range(2, 102))):
