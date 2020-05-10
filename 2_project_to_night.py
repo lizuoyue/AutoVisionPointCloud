@@ -140,7 +140,7 @@ if __name__ == '__main__':
         img_1d_idx = y * img_size[0] + x
 
         # Filter 4 - only consider a point which has a valid ground truth depth
-        if False:
+        if True:
             idx = depth_valid[img_1d_idx]
             pc_z = pc_z[idx]
             img_1d_idx = img_1d_idx[idx]
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         num_pixel_has_points = np.unique(img_1d_idx).shape[0]
 
         # Filter 5 - only consider a point which has an accurate depth
-        if False:
+        if True:
             idx = (depth_min[img_1d_idx] < pc_z) & (pc_z < depth_max[img_1d_idx])
             pc_z = pc_z[idx]
             img_1d_idx = img_1d_idx[idx]
