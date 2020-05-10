@@ -55,7 +55,7 @@ if __name__ == '__main__':
         img_path      = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_fisheye/{CAM_NAME}/%05d.png'
         depth_path    = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_depth/{CAM_NAME}/%05d.pgm'
         sem_path      = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/img_semantics/{CAM_NAME}/%05d.png'
-        mapping_path  =  'result/%05d.npz'
+        mapping_path  =  'day_run_result/result/%05d.npz'
         downsampling_scale = 2
         pc_size = [59050601, 59677974, 51778606, 63369535, 53160322, 49842875, 56162369, 63787850, 77742044]
 
