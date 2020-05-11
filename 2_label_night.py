@@ -32,7 +32,7 @@ if __name__ == '__main__':
     SHOW_TIME = True
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
-    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample.txt'
+    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample_100.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
     # day_pc_generator = get_next_day_pc(day_pc_path)
