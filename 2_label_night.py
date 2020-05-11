@@ -44,7 +44,7 @@ def get_label(p, coord, label):
 if __name__ == '__main__':
 
     BUFFER = 0.25
-    SHOW_TIME = False
+    SHOW_TIME = True
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
@@ -58,7 +58,8 @@ if __name__ == '__main__':
     #     print('Max', pc_coord.max(axis=0))
     # quit()
 
-    for i in tqdm.tqdm(list(range(2, 102))):
+    # for i in tqdm.tqdm(list(range(2, 102))):
+    for i in range(2, 102):
         night_pc = np.loadtxt(night_pc_path % i)
         night_mat = np.loadtxt(night_mat_path % i)[:3]
         night_pc = night_pc[:,:4]
@@ -75,11 +76,11 @@ if __name__ == '__main__':
         local_day_pc_coord = day_pc_coord[idx, :3]
         local_day_pc_label = day_pc_label[idx]
         tree = cKDTree(local_day_pc_coord)
-        nbs = tree.query_ball_point(night_pc, BUFFER)
 
         night_pc_label = []
-        for p, nb in list(zip(night_pc, nbs))[:10]:
-            night_pc_label.append(get_label(p, local_day_pc_coord[nb], local_day_pc_label[nb]))
+        for night_p in tqdm.tqdm(list(night_pc)):
+            nb = tree.query_ball_point(night_p, BUFFER)
+            night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
             print(night_pc_label[-1], local_day_pc_label[nb])
         quit()
         continue
