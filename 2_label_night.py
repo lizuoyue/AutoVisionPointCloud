@@ -87,8 +87,9 @@ if __name__ == '__main__':
             night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
         night_pc_label = np.array(night_pc_label)
 
-        np.save(night_pc_path)
-        savez_compressed(night_pc_path.replace('.txt', '.npz') % i, label=night_pc_label, color=colormap[night_pc_label])
+        np.savez_compressed(night_pc_path.replace('.txt', '.npz') % i, label=night_pc_label, color=colormap[night_pc_label])
+        np.savetxt('hehe.txt', np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)]))
+
         quit()
         continue
     quit()
