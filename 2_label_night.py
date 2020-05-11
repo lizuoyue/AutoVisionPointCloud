@@ -74,7 +74,8 @@ if __name__ == '__main__':
             li_sum.append(idx.sum())
             li_mean.append(idx.mean() * 1000)
 
-        print(i, li)
+        print(i, li_sum)
+        print(i, li_mean)
         continue
     quit()
 
