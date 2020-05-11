@@ -32,7 +32,7 @@ if __name__ == '__main__':
     SHOW_TIME = True
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
-    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
+    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
     day_pc_generator = get_next_day_pc(day_pc_path)
@@ -49,22 +49,24 @@ if __name__ == '__main__':
         night_pc = night_pc[:,:4]
         night_pc[:,3] = 1
         night_pc = night_mat.dot(night_pc.T).T
-        x_min, y_min, _ = night_pc.min(axis=0)
-        x_max, y_max, _ = night_pc.max(axis=0)
+        x_min, y_min, _ = night_pc.min(axis=0) - BUFFER
+        x_max, y_max, _ = night_pc.max(axis=0) + BUFFER
 
-        night_area = (x_max - x_min) * (y_max - y_min)
-        ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
-        ratio = ia / night_area
+        # night_area = (x_max - x_min) * (y_max - y_min)
+        # ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
+        # ratio = ia / night_area
 
-        if ratio < 0.95:
+        if ratio < 1:
             day_pc_coord, day_pc_label, _ = next(day_pc_generator)
-            day_pc_x_min, day_pc_y_min, _ = day_pc_coord.min(axis=0)
-            day_pc_x_max, day_pc_y_max, _ = day_pc_coord.max(axis=0)
-            day_pc_range = [day_pc_x_min, day_pc_x_max, day_pc_y_min, day_pc_y_max]
+            # day_pc_x_min, day_pc_y_min, _ = day_pc_coord.min(axis=0)
+            # day_pc_x_max, day_pc_y_max, _ = day_pc_coord.max(axis=0)
+            # day_pc_range = [day_pc_x_min, day_pc_x_max, day_pc_y_min, day_pc_y_max]
 
-            ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
-            ratio = ia / night_area
-            assert(ratio >= 0.95)
+            # ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
+            # ratio = ia / night_area
+            # assert(ratio >= 0.95)
+
+            
 
         print(i, ratio)
         continue

@@ -22,4 +22,4 @@ if __name__ == '__main__':
         pc = np.loadtxt(pc_path % i)
         num = int(pc.shape[0] / 100)
         np.random.shuffle(pc)
-        np.savetxt(pc_path.replace('.txt', '_sample.txt'), pc[:num], fmt='%.12f', delimiter=' ')
+        np.savetxt((pc_path % i).replace('.txt', '_sample_100.txt'), pc[:num], fmt='%.12f', delimiter=' ')
