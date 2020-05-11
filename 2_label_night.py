@@ -57,7 +57,7 @@ if __name__ == '__main__':
         # ratio = ia / night_area
 
         day_pc_generator = get_next_day_pc(day_pc_path)
-        li = []
+        li_sum, li_mean = [], []
         for _ in range(9):
             day_pc_coord, day_pc_label, _ = next(day_pc_generator)
             # day_pc_x_min, day_pc_y_min, _ = day_pc_coord.min(axis=0)
@@ -71,7 +71,8 @@ if __name__ == '__main__':
             idx = idx & (day_pc_coord[:, 0] <= x_max)
             idx = idx & (day_pc_coord[:, 1] >= y_min)
             idx = idx & (day_pc_coord[:, 1] <= y_max)
-            li.append(idx.sum())
+            li_sum.append(idx.sum())
+            li_mean.append(idx.mean() * 1000)
 
         print(i, li)
         continue
