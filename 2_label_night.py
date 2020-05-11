@@ -48,7 +48,9 @@ if __name__ == '__main__':
         night_mat = np.loadtxt(night_mat_path % i)
         night_pc = night_pc[:,:4]
         night_pc[:,3] = 1
+        print(night_mat.shape)
         night_pc = night_mat.dot(night_mat.T).T
+        print(night_pc.shape)
         x_min, y_min, _ = night_pc.min(axis=0)
         x_max, y_max, _ = night_pc.max(axis=0)
 
