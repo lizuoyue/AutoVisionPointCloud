@@ -4,6 +4,7 @@ import numpy as np
 import tqdm, time
 from utils import *
 from scipy.spatial import cKDTree
+from 1_label_point_cloud import create_autovision_simple_label_colormap
 
 def get_next_day_pc(day_pc_path):
     for i in range(9):
@@ -11,6 +12,7 @@ def get_next_day_pc(day_pc_path):
         pc_d = np.load('pc_label/pc_label_%d.npz' % i)
         pc_label = pc_d['label']
         pc_color = pc_d['color']
+        pc_label = pc_label[:int(pc_label.shape[0]/100)]
         # print('Day Point Cloud %d' % i)
         yield pc_coord, pc_label, pc_color
     return None
@@ -45,9 +47,12 @@ if __name__ == '__main__':
 
     BUFFER = 0.25
     SHOW_TIME = True
+    SAMPLE = '_sample_100'
 
-    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
-    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
+    colormap = create_autovision_simple_label_colormap()
+
+    day_pc_path = f'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d{SAMPLE}.zip'
+    night_pc_path = f'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d{SAMPLE}.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
     day_pc_generator = get_next_day_pc(day_pc_path)
@@ -81,6 +86,10 @@ if __name__ == '__main__':
         for night_p in tqdm.tqdm(list(night_pc)):
             nb = tree.query_ball_point(night_p, BUFFER)
             night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
+        night_pc_label = np.array(night_pc_label)
+
+        np.save(night_pc_path)
+        savez_compressed(night_pc_path.replace('.txt', '.npz') % i, label=night_pc_label, color=colormap[night_pc_label])
         quit()
         continue
     quit()
