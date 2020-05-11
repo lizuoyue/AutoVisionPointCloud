@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
         if i in SEP:
             pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
-            pc_d = np.load('pc_label_%d.npz' % i)
+            pc_d = np.load('pc_label/pc_label_%d.npz' % WHICH_PC[i])
             pc_label = pc_d['label']
             pc_color = pc_d['color']
             pc_index = np.arange(pc_coord.shape[0])
