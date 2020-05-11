@@ -4,7 +4,6 @@ import numpy as np
 import tqdm, time
 from utils import *
 from scipy.spatial import cKDTree
-from 1_label_point_cloud import create_autovision_simple_label_colormap
 
 def get_next_day_pc(day_pc_path):
     for i in range(9):

@@ -9,28 +9,6 @@ import tqdm
 import socket
 from utils import *
 
-def create_autovision_simple_label_colormap():
-    colormap = np.zeros((256, 3), dtype=np.uint8)
-    _PALETTE = np.array(
-        [[90, 120, 150], # Barrier
-        [70, 70, 70], # Building
-        [0, 0, 142], # Car
-        [152, 251, 152], # Terrain
-        [0, 60, 100], # Heavy Vehicle
-        [119, 11, 32], # Motorcycle
-        [128, 64, 128], # Paved Road
-        [170, 170, 170], # Pedestrian Area
-        [220, 20, 60], # Person
-        [250, 170, 30], # Pole Object
-        [70, 130, 180], # Sky
-        [220, 180, 50], # Unpaved Road
-        [107, 142, 35], # Vegetation
-        [0, 170, 30], # Water
-        [255, 255, 255]], # Ignored Object
-    dtype=np.uint8)
-    colormap[:15,:] = _PALETTE
-    return colormap#.flatten()
-
 if __name__ == '__main__':
 
     # Day init
