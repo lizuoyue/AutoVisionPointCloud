@@ -35,7 +35,7 @@ if __name__ == '__main__':
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
-    day_pc_generator = get_next_day_pc(day_pc_path)
+    # day_pc_generator = get_next_day_pc(day_pc_path)
     # for _ in range(9):
     #     pc_coord, _, _ = next(day_pc_generator)
     #     print('Min', pc_coord.min(axis=0))
@@ -56,7 +56,9 @@ if __name__ == '__main__':
         # ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
         # ratio = ia / night_area
 
-        if ratio < 1:
+        day_pc_generator = get_next_day_pc(day_pc_path)
+        li = []
+        for _ in range(9):
             day_pc_coord, day_pc_label, _ = next(day_pc_generator)
             # day_pc_x_min, day_pc_y_min, _ = day_pc_coord.min(axis=0)
             # day_pc_x_max, day_pc_y_max, _ = day_pc_coord.max(axis=0)
@@ -65,10 +67,13 @@ if __name__ == '__main__':
             # ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
             # ratio = ia / night_area
             # assert(ratio >= 0.95)
+            idx =       day_pc_coord[:, 0] >= x_min
+            idx = idx & day_pc_coord[:, 0] <= x_max
+            idx = idx & day_pc_coord[:, 1] >= y_min
+            idx = idx & day_pc_coord[:, 1] <= y_max
+            li.append(idx.sum())
 
-            
-
-        print(i, ratio)
+        print(i, li)
         continue
     quit()
 
