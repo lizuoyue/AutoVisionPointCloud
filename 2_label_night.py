@@ -67,10 +67,10 @@ if __name__ == '__main__':
             # ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
             # ratio = ia / night_area
             # assert(ratio >= 0.95)
-            idx =       day_pc_coord[:, 0] >= x_min
-            idx = idx & day_pc_coord[:, 0] <= x_max
-            idx = idx & day_pc_coord[:, 1] >= y_min
-            idx = idx & day_pc_coord[:, 1] <= y_max
+            idx =        day_pc_coord[:, 0] >= x_min
+            idx = idx & (day_pc_coord[:, 0] <= x_max)
+            idx = idx & (day_pc_coord[:, 1] >= y_min)
+            idx = idx & (day_pc_coord[:, 1] <= y_max)
             li.append(idx.sum())
 
         print(i, li)
