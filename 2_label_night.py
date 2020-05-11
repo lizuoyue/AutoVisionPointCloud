@@ -81,7 +81,6 @@ if __name__ == '__main__':
         for night_p in tqdm.tqdm(list(night_pc)):
             nb = tree.query_ball_point(night_p, BUFFER)
             night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
-            print(night_pc_label[-1], local_day_pc_label[nb])
         quit()
         continue
     quit()
