@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     day_pc_generator = get_next_day_pc(day_pc_path)
     for _ in range(9):
-        pc_coord = next(day_pc_generator)
+        pc_coord, _, _ = next(day_pc_generator)
         print('Min', pc_coord.min(axis=0))
         print('Max', pc_coord.max(axis=0))
     quit()
