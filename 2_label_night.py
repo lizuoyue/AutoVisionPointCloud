@@ -58,7 +58,7 @@ if __name__ == '__main__':
         idx = idx & (day_pc_coord[:, 1] <= y_max)
 
         local_day_pc_coord = day_pc_coord[idx, :3]
-        local_day_pc_label = day_pc_label[idx]
+        # local_day_pc_label = day_pc_label[idx]
         tree = cKDTree(local_day_pc_coord)
         nb = tree.query_ball_point(night_pc)
         print(nb[:10])
