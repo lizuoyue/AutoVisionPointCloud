@@ -15,7 +15,7 @@ def get_next_day_pc(day_pc_path):
         yield pc_coord, pc_label, pc_color
     return None
 
-def area(a, b):
+def intersection_area(a, b):
     # xmin xmax ymin ymax
     # returns 0 if rectangles don't intersect
     dx = min(a[1], b[1]) - max(a[0], b[0])
@@ -35,13 +35,14 @@ if __name__ == '__main__':
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
     day_pc_generator = get_next_day_pc(day_pc_path)
-    for _ in range(9):
-        pc_coord, _, _ = next(day_pc_generator)
-        print('Min', pc_coord.min(axis=0))
-        print('Max', pc_coord.max(axis=0))
-    quit()
+    # for _ in range(9):
+    #     pc_coord, _, _ = next(day_pc_generator)
+    #     print('Min', pc_coord.min(axis=0))
+    #     print('Max', pc_coord.max(axis=0))
+    # quit()
 
     day_pc_range, r = [0, 0, 0, 0], 1
+    day_pc_range = [3.56118883e+05, 3.57207577e+05, 1.58350621e+05, 1.58728456e+05]
     for i in range(2, 102):
         night_pc = np.loadtxt(night_pc_path % i)
         night_mat = np.loadtxt(night_mat_path % i)
@@ -51,15 +52,23 @@ if __name__ == '__main__':
         x_min, y_min, _ = night_pc.min(axis=0)
         x_max, y_max, _ = night_pc.max(axis=0)
 
-        a = area(day_pc_range, [x_min, x_max, y_min, y_max])
-        if init or load:
+        night_area = (x_max - x_min) * (y_max - y_min)
+        ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
+        ratio = ia / night_area
+
+        if ratio < 0.95:
             day_pc_coord, day_pc_label, _ = next(day_pc_generator)
-            
+            day_pc_x_min, day_pc_y_min, _ = day_pc_coord.min(axis=0)
+            day_pc_x_max, day_pc_y_max, _ = day_pc_coord.max(axis=0)
+            day_pc_range = [day_pc_x_min, day_pc_x_max, day_pc_y_min, day_pc_y_max]
 
+            ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
+            ratio = ia / night_area
+            assert(ratio >= 0.95)
 
-
-
-
+        print(i, ratio)
+        continue
+    quit()
 
 
     pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
