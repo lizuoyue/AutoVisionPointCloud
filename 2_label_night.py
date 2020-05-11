@@ -28,9 +28,10 @@ def intersection_area(a, b):
 
 if __name__ == '__main__':
 
+    BUFFER = 0.25
     SHOW_TIME = True
 
-    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
+    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
@@ -41,8 +42,7 @@ if __name__ == '__main__':
     #     print('Max', pc_coord.max(axis=0))
     # quit()
 
-    day_pc_range, r = [0, 0, 0, 0], 1
-    day_pc_range = [3.56118883e+05, 3.57207577e+05, 1.58350621e+05, 1.58728456e+05]
+    ratio = 0
     for i in range(2, 102):
         night_pc = np.loadtxt(night_pc_path % i)
         night_mat = np.loadtxt(night_mat_path % i)[:3]
