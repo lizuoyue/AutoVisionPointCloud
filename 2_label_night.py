@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     BUFFER = 0.1
     SHOW_TIME = True
-    SAMPLE = '_sample_100'
+    SAMPLE = ''#'_sample_100'
 
     colormap = create_autovision_simple_label_colormap()
 
