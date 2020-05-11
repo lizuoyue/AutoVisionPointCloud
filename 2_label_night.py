@@ -15,16 +15,31 @@ def get_next_day_pc(day_pc_path):
         yield pc_coord, pc_label, pc_color
     return None
 
-def intersection_area(a, b):
-    # xmin xmax ymin ymax
-    # returns 0 if rectangles don't intersect
-    dx = min(a[1], b[1]) - max(a[0], b[0])
-    dy = min(a[3], b[3]) - max(a[2], b[2])
-    if (dx >= 0) and (dy >= 0):
-        area = dx * dy
-    else:
-        area = 0
-    return area
+# def intersection_area(a, b):
+#     # xmin xmax ymin ymax
+#     # returns 0 if rectangles don't intersect
+#     dx = min(a[1], b[1]) - max(a[0], b[0])
+#     dy = min(a[3], b[3]) - max(a[2], b[2])
+#     if (dx >= 0) and (dy >= 0):
+#         area = dx * dy
+#     else:
+#         area = 0
+#     return area
+
+def get_label(p, coord, label):
+    assert(coord.shape[0] == label.shape[0])
+    idx = label < 255
+    coord = coord[idx]
+    label = label[idx]
+    if label.shape[0] == 0:
+        return 255
+    inv_dist = 1.0 / np.sqrt(np.sum((coord - p) ** 2, axis=-1))
+    num = label.max() + 1
+    score = np.zeros((num,))
+    for i in range(num):
+        score[i] = inv_dist[label == i].sum()
+    return np.argmax(score)
+
 
 if __name__ == '__main__':
 
@@ -43,7 +58,7 @@ if __name__ == '__main__':
     #     print('Max', pc_coord.max(axis=0))
     # quit()
 
-    for i in range(2, 102):
+    for i in tqdm.tqdm(list(range(2, 102))):
         night_pc = np.loadtxt(night_pc_path % i)
         night_mat = np.loadtxt(night_mat_path % i)[:3]
         night_pc = night_pc[:,:4]
@@ -58,28 +73,33 @@ if __name__ == '__main__':
         idx = idx & (day_pc_coord[:, 1] <= y_max)
 
         local_day_pc_coord = day_pc_coord[idx, :3]
-        # local_day_pc_label = day_pc_label[idx]
+        local_day_pc_label = day_pc_label[idx]
         tree = cKDTree(local_day_pc_coord)
-        nb = tree.query_ball_point(night_pc, BUFFER)
-        print(nb[:10])
-        quit()
+        nbs = tree.query_ball_point(night_pc, BUFFER)
 
+        night_pc_label = []
+        for p, nb in list(zip(night_pc, nbs))[:10]:
+            night_pc_label.append(get_label(p, local_day_pc_coord[nb], local_day_pc_label[nb]))
+            print(night_pc_label[-1], local_day_pc_label[nb])
+        quit()
         continue
     quit()
 
 
-    pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
-    mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
-    random.seed(7)
-    li = []
-    for i in tqdm.tqdm(list(range(2, 102))):
-        pc = np.loadtxt(pc_path % i)
-        mat = np.loadtxt(mat_path % i)
-        num = int(pc.shape[0] / 100)
-        np.random.shuffle(pc)
-        pc[:,3] = 1
-        li.append(mat.dot(pc[:num,:4].T).T)
-    pc = np.concatenate(li)
-    np.savetxt('merge_night_sample.txt', pc, fmt='%.12f', delimiter=';')
+
+
+    # pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
+    # mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
+    # random.seed(7)
+    # li = []
+    # for i in tqdm.tqdm(list(range(2, 102))):
+    #     pc = np.loadtxt(pc_path % i)
+    #     mat = np.loadtxt(mat_path % i)
+    #     num = int(pc.shape[0] / 100)
+    #     np.random.shuffle(pc)
+    #     pc[:,3] = 1
+    #     li.append(mat.dot(pc[:num,:4].T).T)
+    # pc = np.concatenate(li)
+    # np.savetxt('merge_night_sample.txt', pc, fmt='%.12f', delimiter=';')
 
 
