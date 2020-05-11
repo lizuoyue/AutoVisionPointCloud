@@ -90,7 +90,7 @@ if __name__ == '__main__':
         np.savez_compressed(night_pc_path.replace('.txt', '.npz') % i, label=night_pc_label, color=colormap[night_pc_label])
         night_pc_with_color = np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)], axis=1)
         np.random.shuffle(night_pc_with_color)
-        np.savetxt(night_pc_path.replace('.txt', 'sample_100_with_color.txt') % i, night_pc_with_color[:,int(night_pc_with_color.shape[0]/100)])
+        np.savetxt(night_pc_path.replace('.txt', 'sample_100_with_color.txt') % i, night_pc_with_color[:int(night_pc_with_color.shape[0]/100)])
 
     # pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
     # mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
