@@ -52,14 +52,9 @@ if __name__ == '__main__':
         x_min, y_min, _ = night_pc.min(axis=0)
         x_max, y_max, _ = night_pc.max(axis=0)
 
-        print([x_min, x_max, y_min, y_max])
-        print(day_pc_range)
-
         night_area = (x_max - x_min) * (y_max - y_min)
         ia = intersection_area(day_pc_range, [x_min, x_max, y_min, y_max])
         ratio = ia / night_area
-        print(ratio)
-        quit()
 
         if ratio < 0.95:
             day_pc_coord, day_pc_label, _ = next(day_pc_generator)
