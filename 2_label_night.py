@@ -11,7 +11,7 @@ def get_next_day_pc(day_pc_path):
         pc_d = np.load('pc_label/pc_label_%d.npz' % i)
         pc_label = pc_d['label']
         pc_color = pc_d['color']
-        print('Day Point Cloud %d' % i)
+        # print('Day Point Cloud %d' % i)
         yield pc_coord, pc_label, pc_color
     return None
 
@@ -29,7 +29,7 @@ def intersection_area(a, b):
 if __name__ == '__main__':
 
     BUFFER = 0.25
-    SHOW_TIME = True
+    SHOW_TIME = False
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample_100.txt'
