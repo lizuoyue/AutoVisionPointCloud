@@ -9,7 +9,7 @@ def get_next_day_pc(day_pc_path):
     for i in range(9):
         pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(day_pc_path % i, show_time=SHOW_TIME), show_time=SHOW_TIME)
         pc_d = np.load('pc_label/pc_label_%d.npz' % i)
-        pc_label = pc_d['label'][:590506]
+        pc_label = pc_d['label']
         pc_color = pc_d['color']
         # print('Day Point Cloud %d' % i)
         yield pc_coord, pc_label, pc_color
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     BUFFER = 0.25
     SHOW_TIME = False
 
-    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
-    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d_sample_100.txt'
+    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
+    night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
     night_mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
 
     day_pc_generator = get_next_day_pc(day_pc_path)
