@@ -9,7 +9,7 @@ def get_next_day_pc(day_pc_path):
     for i in range(9):
         pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(day_pc_path % i, show_time=SHOW_TIME), show_time=SHOW_TIME)
         pc_d = np.load('pc_label/pc_label_%d.npz' % i)
-        pc_label = pc_d['label']
+        pc_label = pc_d['label'][:590506]
         pc_color = pc_d['color']
         # print('Day Point Cloud %d' % i)
         yield pc_coord, pc_label, pc_color
