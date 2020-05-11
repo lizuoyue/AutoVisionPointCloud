@@ -11,7 +11,6 @@ def get_next_day_pc(day_pc_path):
         pc_d = np.load('pc_label/pc_label_%d.npz' % i)
         pc_label = pc_d['label']
         pc_color = pc_d['color']
-        pc_label = pc_label[:int(pc_label.shape[0]/100)]
         # print('Day Point Cloud %d' % i)
         yield pc_coord, pc_label, pc_color
     return None
@@ -44,7 +43,7 @@ def get_label(p, coord, label):
 
 if __name__ == '__main__':
 
-    BUFFER = 0.25
+    BUFFER = 0.1
     SHOW_TIME = True
     SAMPLE = '_sample_100'
 
@@ -79,6 +78,7 @@ if __name__ == '__main__':
 
         local_day_pc_coord = day_pc_coord[idx, :3]
         local_day_pc_label = day_pc_label[idx]
+
         tree = cKDTree(local_day_pc_coord)
 
         night_pc_label = []
@@ -88,14 +88,7 @@ if __name__ == '__main__':
         night_pc_label = np.array(night_pc_label)
 
         np.savez_compressed(night_pc_path.replace('.txt', '.npz') % i, label=night_pc_label, color=colormap[night_pc_label])
-        np.savetxt('hehe.txt', np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)], axis=1))
-
-        quit()
-        continue
-    quit()
-
-
-
+        np.savetxt(night_pc_path.replace('.txt', '_with_color.txt') % i, np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)], axis=1))
 
     # pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
     # mat_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/icp_T_day_night/point_cloud_%d_T_day_night.txt'
