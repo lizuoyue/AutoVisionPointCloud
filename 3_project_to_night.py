@@ -82,6 +82,9 @@ if __name__ == '__main__':
         pc_d = [np.load((pc_path % j).replace('.txt', '.npz')) for j in range(12, 22)]
         pc_label = np.concatenate([item['label'] for item in pc_d])
         pc_color = np.concatenate([item['color'] for item in pc_d])
+        pc_index = np.arange(pc_coord.shape[0])
+        assert(pc_label.shape[0] == pc_coord.shape[0])
+        assert(pc_color.shape[0] == pc_coord.shape[0])
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
