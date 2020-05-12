@@ -34,7 +34,7 @@ if __name__ == '__main__':
         cam_int_path  =  'data/2018-10-08-Calibration-Data/camera_system_cal.json'
         cam_ext_path  =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
         # pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
-        pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
+        pc_path       =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
         img_path      =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/DEV_000F3102F884/%05d.png'
         depth_path    =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_depth/DEV_000F3102F884/%05d.pgm'
         downsampling_scale = 2
