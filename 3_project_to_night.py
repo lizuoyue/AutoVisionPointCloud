@@ -78,7 +78,8 @@ if __name__ == '__main__':
         if i + FRAME_FROM != 3400:
             continue
 
-        pc_coord = np.concatenate([np.loadtxt(pc_path % j) for j in range(12, 22)])
+        pc_coord = np.concatenate([np.loadtxt(pc_path % j)[:, :4] for j in range(12, 22)])
+        pc_coord[:, 3] = 1
         pc_d = [np.load((pc_path % j).replace('.txt', '.npz')) for j in range(12, 22)]
         pc_label = np.concatenate([item['label'] for item in pc_d])
         pc_color = np.concatenate([item['color'] for item in pc_d])
