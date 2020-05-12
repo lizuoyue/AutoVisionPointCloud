@@ -11,7 +11,7 @@ from utils import *
 
 if __name__ == '__main__':
 
-    # Day init
+    # Night init
     CAM_NAME = 'DEV_000F3102F884'
     CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.01
     SEP = [0, 1780, 3404, 4956, 6683, 8424, 10000, 11534, 13122, 14434]
@@ -66,26 +66,25 @@ if __name__ == '__main__':
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
-        # if i in SEP:
-        #     pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
-        #     pc_d = np.load('pc_label/pc_label_%d.npz' % WHICH_PC[i])
-        #     pc_label = pc_d['label']
-        #     pc_color = pc_d['color']
-        #     pc_index = np.arange(pc_coord.shape[0])
-        #     assert(pc_label.shape[0] == pc_coord.shape[0])
-        #     assert(pc_color.shape[0] == pc_coord.shape[0])
+        if i in SEP:
+            # pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
+            # pc_d = np.load('pc_label/pc_label_%d.npz' % WHICH_PC[i])
+            # pc_label = pc_d['label']
+            # pc_color = pc_d['color']
+            # pc_index = np.arange(pc_coord.shape[0])
+            # assert(pc_label.shape[0] == pc_coord.shape[0])
+            # assert(pc_color.shape[0] == pc_coord.shape[0])
+            pc_coord = np.concatenate([np.loadtxt(pc_path % j)[:, :4] for j in range(2, 102)])
+            pc_coord[:, 3] = 1
+            pc_d = [np.load((pc_path % j).replace('.txt', '.npz')) for j in range(2, 102)]
+            pc_label = np.concatenate([item['label'] for item in pc_d])
+            pc_color = np.concatenate([item['color'] for item in pc_d])
+            pc_index = np.arange(pc_coord.shape[0])
+            assert(pc_label.shape[0] == pc_coord.shape[0])
+            assert(pc_color.shape[0] == pc_coord.shape[0])
 
-        if i + FRAME_FROM != 3400:
-            continue
-
-        pc_coord = np.concatenate([np.loadtxt(pc_path % j)[:, :4] for j in range(12, 22)])
-        pc_coord[:, 3] = 1
-        pc_d = [np.load((pc_path % j).replace('.txt', '.npz')) for j in range(12, 22)]
-        pc_label = np.concatenate([item['label'] for item in pc_d])
-        pc_color = np.concatenate([item['color'] for item in pc_d])
-        pc_index = np.arange(pc_coord.shape[0])
-        assert(pc_label.shape[0] == pc_coord.shape[0])
-        assert(pc_color.shape[0] == pc_coord.shape[0])
+        # if i + FRAME_FROM != 3400:
+        #     continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -195,7 +194,7 @@ if __name__ == '__main__':
         if True:
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
-            fake_img[img_1d_idx] = pc_color[pc_cam_index]
+            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.3 + pc_color[pc_cam_index] * 0.7).astype(np.uint8)
             Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('night_semantics/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
