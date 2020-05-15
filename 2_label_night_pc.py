@@ -93,9 +93,9 @@ if __name__ == '__main__':
             sample.append(night_pc_with_color[:int(night_pc_with_color.shape[0]/100)])
 
             if j % 10 == 0:
-                np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
+                np.savetxt(f'{save_path}/{i}_sample_100.txt', np.concatenate(sample))
 
-        np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
+        np.savetxt(f'{save_path}/{i}_sample_100.txt', np.concatenate(sample))
 
 
 
