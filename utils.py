@@ -23,25 +23,17 @@ class nightLocalPointCloud(object):
     def __init__(self, zip_path):
         self.idx = int(os.path.basename(zip_path).replace('.zip', ''))
         self.archive = zipfile.ZipFile(zip_path, 'r')
-        self.pc_files, self.mat_files = [], []
+        self.pc_files, self.mat_files = {}, {}
         for file in self.archive.namelist():
             if file.endswith('.txt'):
+                spl = os.path.basename(file).replace('.txt', '').split('_')
                 if 'T' in file:
-                    self.mat_files.append(file)
+                    self.mat_files[int(spl[2])] = file
                 else:
-                    self.pc_files.append(file)
-        assert(len(self.pc_files) == len(self.mat_files))
-        self.pc_files.sort()
-        self.mat_files.sort()
-        self.files = []
-        for pc_file, mat_file in zip(self.pc_files, self.mat_files):
-            pc_idx = int(os.path.basename(pc_file).replace('.txt', '').split('_')[-1])
-            mat_idx = int(os.path.basename(mat_file).replace('.txt', '').split('_')[2])
-            print(pc_idx, mat_idx)
-            assert(pc_idx == mat_idx)
-            self.files.append((pc_idx, pc_file, mat_file))
-        self.files.sort()
-        self.num = len(self.files)
+                    self.pc_files[int(spl[-1])] = file
+        self.k = sorted(list(self.pc_files.keys()))
+        assert(self.k == sorted(list(self.mat_files.keys())))
+        self.num = len(k)
         self.iter = 0
         return
 
@@ -49,7 +41,9 @@ class nightLocalPointCloud(object):
         if self.iter == self.num:
             return None
         else:
-            idx, pc_file, mat_file = self.files[self.iter]
+            idx = self.k[self.iter]
+            pc_file = self.pc_files[idx]
+            mat_file = self.mat_files[idx]
             self.iter += 1
             pc_str_lines = [line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line]
             mat_str_lines = [line.strip() for line in self.archive.read(mat_file).decode('utf-8').split('\n') if line]
