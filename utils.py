@@ -18,6 +18,44 @@ import socket
 #         [0, 0, 1]
 #     ], np.float32)
 
+class nightLocalPointCloud(object):
+
+    def __init__(zip_path):
+        self.idx = int(os.path.basename(zip_path).replace('.zip', ''))
+        self.archive = zipfile.ZipFile(zip_path, 'r')
+        self.pc_files, self.mat_files = [], []
+        for file in self.archive.namelist():
+            if file.endswith('.txt'):
+                if 'T' in file:
+                    self.mat_files.append(file)
+                else:
+                    self.pc_files.append(file)
+        assert(len(self.pc_files) == len(self.mat_files))
+        sort(self.pc_files)
+        sort(self.mat_files)
+        self.files = []
+        for pc_file, mat_file in zip(self.pc_files, self.mat_files):
+            pc_idx = int(os.path.basename(pc_file).replace('.txt', '').split('_')[-1])
+            mat_idx = int(os.path.basename(mat_file).replace('.txt', '').split('_')[2])
+            assert(pc_idx == mat_idx)
+            self.files.append((pc_idx, pc_file, mat_file))
+        sort(self.files)
+        self.num = len(self.files)
+        self.iter = 0
+        return
+
+    def get_next_transformed_local_pc():
+        if self.iter == self.num:
+            return None
+        else:
+            idx, pc_file, mat_file = self.files[self.iter]
+            self.iter += 1
+            pc_str_lines = [line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line]
+            mat_str_lines = [line.strip() for line in self.archive.read(mat_file).decode('utf-8').split('\n') if line]
+            pc = np.array([[float(item) for item in line.split()[:3]] + [1.0] for line in pc_str_lines])
+            mat = np.array([[float(item) for item in line.split()] for line in pc_str_lines[:3]])
+        return mat.dot(pc.T).T
+
 def create_autovision_simple_label_colormap():
     colormap = np.zeros((256, 3), dtype=np.uint8)
     _PALETTE = np.array(
