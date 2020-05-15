@@ -62,8 +62,8 @@ if __name__ == '__main__':
         for j in tqdm.tqdm(list(range(nightObj.num))):
             n, night_pc = nightObj.get_next_transformed_local_pc()
 
-            x_min, y_min, _ = night_pc.min(axis=0) - BUFFER
-            x_max, y_max, _ = night_pc.max(axis=0) + BUFFER
+            x_min, y_min, _ = night_pc.min(axis=0) - BUFFER_DIST
+            x_max, y_max, _ = night_pc.max(axis=0) + BUFFER_DIST
             idx =        day_pc_coord[:, 0] >= x_min
             idx = idx & (day_pc_coord[:, 0] <= x_max)
             idx = idx & (day_pc_coord[:, 1] >= y_min)
