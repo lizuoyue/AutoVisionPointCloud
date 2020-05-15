@@ -37,11 +37,16 @@ if __name__ == '__main__':
     day_label_path = '1_day_pc_label/pc_label_%d.npz'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/local_point_clouds/%d.zip'
 
+    sample = []
     for i in range(9):
         # day_pc_coord, day_pc_label = get_day_pc(day_pc_path % i, day_label_path % i)
         nightObj = nightLocalPointCloud(night_pc_path % i)
-        for j in tqdm.tqdm(list(range(nightObj.num))):
+        for j in tqdm.tqdm(list(range(nightObj.num))[:10]):
             night_pc = nightObj.get_next_transformed_local_pc()
+            np.random.shuffle(night_pc)
+            sample.append(night_pc[:int(night_pc.shape[0]/100), :3])
+
+    np.savetxt('hehe.txt', np.concatenate(sample))
 
     quit()
 

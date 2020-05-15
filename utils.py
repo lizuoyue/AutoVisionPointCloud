@@ -35,6 +35,7 @@ class nightLocalPointCloud(object):
         assert(self.k == sorted(list(self.mat_files.keys())))
         self.num = len(self.k)
         self.iter = 0
+        self.sample = []
         return
 
     def get_next_transformed_local_pc(self):
