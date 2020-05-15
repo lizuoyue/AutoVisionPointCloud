@@ -20,7 +20,7 @@ import socket
 
 class nightLocalPointCloud(object):
 
-    def __init__(zip_path):
+    def __init__(self, zip_path):
         self.idx = int(os.path.basename(zip_path).replace('.zip', ''))
         self.archive = zipfile.ZipFile(zip_path, 'r')
         self.pc_files, self.mat_files = [], []
@@ -44,7 +44,7 @@ class nightLocalPointCloud(object):
         self.iter = 0
         return
 
-    def get_next_transformed_local_pc():
+    def get_next_transformed_local_pc(self):
         if self.iter == self.num:
             return None
         else:
