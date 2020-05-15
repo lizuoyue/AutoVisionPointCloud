@@ -41,7 +41,7 @@ if __name__ == '__main__':
         # day_pc_coord, day_pc_label = get_day_pc(day_pc_path % i, day_label_path % i)
         nightObj = nightLocalPointCloud(night_pc_path % i)
         for j in tqdm.tqdm(list(range(nightObj.num))):
-            night_pc = get_next_transformed_local_pc()
+            night_pc = nightObj.get_next_transformed_local_pc()
 
     quit()
 
