@@ -33,7 +33,7 @@ class nightLocalPointCloud(object):
                     self.pc_files[int(spl[-1])] = file
         self.k = sorted(list(self.pc_files.keys()))
         assert(self.k == sorted(list(self.mat_files.keys())))
-        self.num = len(k)
+        self.num = len(self.k)
         self.iter = 0
         return
 
