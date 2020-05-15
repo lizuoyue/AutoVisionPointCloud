@@ -31,15 +31,15 @@ class nightLocalPointCloud(object):
                 else:
                     self.pc_files.append(file)
         assert(len(self.pc_files) == len(self.mat_files))
-        sort(self.pc_files)
-        sort(self.mat_files)
+        self.pc_files.sort()
+        self.mat_files.sort()
         self.files = []
         for pc_file, mat_file in zip(self.pc_files, self.mat_files):
             pc_idx = int(os.path.basename(pc_file).replace('.txt', '').split('_')[-1])
             mat_idx = int(os.path.basename(mat_file).replace('.txt', '').split('_')[2])
             assert(pc_idx == mat_idx)
             self.files.append((pc_idx, pc_file, mat_file))
-        sort(self.files)
+        self.files.sort()
         self.num = len(self.files)
         self.iter = 0
         return
