@@ -57,6 +57,7 @@ if __name__ == '__main__':
 
     for i in range(9):
         day_pc_coord, day_pc_label = get_day_pc(day_pc_path % i, day_label_path % i, show_time=True)
+        day_pc_label = day_pc_label[:day_pc_coord.shape[0]]
         nightObj = nightLocalPointCloud(night_pc_path % i)
         sample = []
         for j in tqdm.tqdm(list(range(nightObj.num))):
