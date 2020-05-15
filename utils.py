@@ -48,7 +48,7 @@ class nightLocalPointCloud(object):
             pc_str_lines = [line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line]
             mat_str_lines = [line.strip() for line in self.archive.read(mat_file).decode('utf-8').split('\n') if line]
             pc = np.array([[float(item) for item in line.split()[:3]] + [1.0] for line in pc_str_lines])
-            mat = np.array([[float(item) for item in line.split()] for line in pc_str_lines[:3]])
+            mat = np.array([[float(item) for item in line.split()] for line in mat_str_lines[:3]])
         return mat.dot(pc.T).T
 
 def create_autovision_simple_label_colormap():
