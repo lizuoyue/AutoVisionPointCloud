@@ -4,11 +4,13 @@ import numpy as np
 import tqdm, time
 from utils import *
 from scipy.spatial import cKDTree
+from sklearn.neighbors import KDTree
 
 def get_day_pc(day_pc_path, day_label_path, show_time=True):
     pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(day_pc_path, show_time=show_time), show_time=show_time)
     pc_d = np.load(day_label_path)
     pc_label = pc_d['label']
+    pc_label[pc_label > 200] = 15
     # pc_color = pc_d['color']
     return pc_coord, pc_label#, pc_color
 
@@ -26,12 +28,27 @@ def get_label(p, coord, label):
         score[i] = inv_dist[label == i].sum()
     return np.argmax(score)
 
+def get_label_with_dist(dist, label):
+    idx = label < 255
+    dist = dist[idx]
+    label = label[idx]
+    if label.shape[0] == 0:
+        return 255
+    inv_dist = 1.0 / dist
+    num = label.max() + 1
+    score = np.zeros((num,))
+    for i in range(num):
+        score[i] = inv_dist[label == i].sum()
+    return np.argmax(score)
+
 if __name__ == '__main__':
 
-    BUFFER = 0.1
+    BUFFER_NUM = 32
+    BUFFER_DIST = 0.1
     SHOW_TIME = True
 
     colormap = create_autovision_simple_label_colormap()
+    one_hot_tabel = np.eye(16)
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
     day_label_path = '1_day_pc_label/pc_label_%d.npz'
@@ -55,23 +72,32 @@ if __name__ == '__main__':
             local_day_pc_coord = day_pc_coord[idx, :3]
             local_day_pc_label = day_pc_label[idx]
 
-            tree = cKDTree(local_day_pc_coord)
+            tree = KDTree(local_day_pc_coord)
 
             night_pc_label = []
-            for night_p in night_pc:
-                nb = tree.query_ball_point(night_p, BUFFER)
-                night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
-            night_pc_label = np.array(night_pc_label)
-            np.savez_compressed(f'{save_path}/{i}_{n}.npz', label=night_pc_label, color=colormap[night_pc_label])
+            # for night_p in night_pc:
+            # nb = tree.query_ball_point(night_p, BUFFER)
+            # night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
+            # night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
+
+            dist, nb = tree.query(night_pc, k=BUFFER_NUM, return_distance=True, sort_results=False) # N * BUFFER_NUM
+            weight = 1.0 / dist
+            weight[dist > BUFFER_DIST] = 0
+            one_hot = one_hot_tabel[local_day_pc_label[nb.flatten()]].reshape(nb.shape + (one_hot_tabel.shape[0],)) # N * BUFFER_NUM * CLASS_NUM
+            score = (one_hot * weight[..., np.newaxis]).sum(axis=1)
+            night_pc_label = score.argmax(axis=1)
+            night_pc_label[night_pc_label == 15] == 255
+
+            np.savez_compressed(f'{save_path}/{i}_{n}_sklearn.npz', label=night_pc_label, color=colormap[night_pc_label])
 
             night_pc_with_color = np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)], axis=1)
             np.random.shuffle(night_pc_with_color)
             sample.append(night_pc_with_color[:int(night_pc_with_color.shape[0]/100)])
 
             if j % 10 == 0:
-                np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
+                np.savetxt(f'{save_path}/{i}_sklearn.txt', np.concatenate(sample))
 
-        np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
+        np.savetxt(f'{save_path}/{i}_sklearn.txt', np.concatenate(sample))
 
 
 
