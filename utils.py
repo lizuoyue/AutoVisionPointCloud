@@ -37,6 +37,7 @@ class nightLocalPointCloud(object):
         for pc_file, mat_file in zip(self.pc_files, self.mat_files):
             pc_idx = int(os.path.basename(pc_file).replace('.txt', '').split('_')[-1])
             mat_idx = int(os.path.basename(mat_file).replace('.txt', '').split('_')[2])
+            print(pc_idx, mat_idx)
             assert(pc_idx == mat_idx)
             self.files.append((pc_idx, pc_file, mat_file))
         self.files.sort()
