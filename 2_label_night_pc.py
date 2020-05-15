@@ -50,7 +50,7 @@ if __name__ == '__main__':
     colormap = create_autovision_simple_label_colormap()
     one_hot_tabel = np.eye(16)
 
-    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d_sample_100.zip'
+    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip' # _sample_100
     day_label_path = '1_day_pc_label/pc_label_%d.npz'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/local_point_clouds/%d.zip'
     save_path = '2_night_pc_label'
