@@ -50,7 +50,7 @@ if __name__ == '__main__':
     colormap = create_autovision_simple_label_colormap()
     one_hot_tabel = np.eye(16)
 
-    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip' # _sample_100
+    day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
     day_label_path = '1_day_pc_label/pc_label_%d.npz'
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/local_point_clouds/%d.zip'
     save_path = '2_night_pc_label'
@@ -75,30 +75,27 @@ if __name__ == '__main__':
 
             tree = KDTree(local_day_pc_coord)
 
-            night_pc_label = []
-            # for night_p in night_pc:
-            # nb = tree.query_ball_point(night_p, BUFFER)
-            # night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
-            # night_pc_label.append(get_label(night_p, local_day_pc_coord[nb], local_day_pc_label[nb]))
-
             dist, nb = tree.query(night_pc, k=BUFFER_NUM, return_distance=True, sort_results=False) # N * BUFFER_NUM
             weight = 1.0 / dist
             weight[dist > BUFFER_DIST] = 0
+
             one_hot = one_hot_tabel[local_day_pc_label[nb.flatten()]].reshape(nb.shape + (one_hot_tabel.shape[0],)) # N * BUFFER_NUM * CLASS_NUM
             score = (one_hot * weight[..., np.newaxis]).sum(axis=1)
+            score_max = score.max(axis=1)
             night_pc_label = score.argmax(axis=1)
+            night_pc_label[score_max < 1e-6] = 255
             night_pc_label[night_pc_label == 15] == 255
 
-            np.savez_compressed(f'{save_path}/{i}_{n}_sklearn.npz', label=night_pc_label, color=colormap[night_pc_label])
+            np.savez_compressed(f'{save_path}/{i}_{n}.npz', label=night_pc_label, color=colormap[night_pc_label])
 
             night_pc_with_color = np.concatenate([night_pc, colormap[night_pc_label].astype(np.float)], axis=1)
             np.random.shuffle(night_pc_with_color)
             sample.append(night_pc_with_color[:int(night_pc_with_color.shape[0]/100)])
 
             if j % 10 == 0:
-                np.savetxt(f'{save_path}/{i}_sklearn.txt', np.concatenate(sample))
+                np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
 
-        np.savetxt(f'{save_path}/{i}_sklearn.txt', np.concatenate(sample))
+        np.savetxt(f'{save_path}/{i}.txt', np.concatenate(sample))
 
 
 
