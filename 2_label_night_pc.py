@@ -48,7 +48,7 @@ if __name__ == '__main__':
     SHOW_TIME = True
 
     colormap = create_autovision_simple_label_colormap()
-    one_hot_tabel = np.eye(16)
+    one_hot_tabel = np.eye(16, dtype=np.float32)
 
     day_pc_path = 'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
     day_label_path = '1_day_pc_label/pc_label_%d.npz'
@@ -73,14 +73,15 @@ if __name__ == '__main__':
             local_day_pc_coord = day_pc_coord[idx, :3]
             local_day_pc_label = day_pc_label[idx]
 
-            tree = KDTree(local_day_pc_coord)
+            tree = KDTree(local_day_pc_coord, leaf_size=100)
 
             dist, nb = tree.query(night_pc, k=BUFFER_NUM, return_distance=True, sort_results=False) # N * BUFFER_NUM
             weight = 1.0 / dist
             weight[dist > BUFFER_DIST] = 0
+            weight = weight.astype(np.float32)
 
-            one_hot = one_hot_tabel[local_day_pc_label[nb.flatten()]].reshape(nb.shape + (one_hot_tabel.shape[0],)) # N * BUFFER_NUM * CLASS_NUM
-            score = (one_hot * weight[..., np.newaxis]).sum(axis=1)
+            score = one_hot_tabel[local_day_pc_label[nb.flatten()]].reshape(nb.shape + (one_hot_tabel.shape[0],)) # N * BUFFER_NUM * CLASS_NUM
+            score = (score * weight[..., np.newaxis]).sum(axis=1)
             score_max = score.max(axis=1)
             night_pc_label = score.argmax(axis=1)
             night_pc_label[score_max < 1e-6] = 255
