@@ -53,6 +53,8 @@ if __name__ == '__main__':
     #
     # for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
     for i, pose in enumerate(cam_poses[FRAME_FROM: FRAME_TO]):
+        if i == 0:
+            continue
 
         if i in SEP:
             nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i])
