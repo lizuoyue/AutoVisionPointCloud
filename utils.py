@@ -52,6 +52,23 @@ class nightLocalPointCloud(object):
             mat = np.array([[float(item) for item in line.split()] for line in mat_str_lines[:3]])
         return idx, mat.dot(pc.T).T
 
+    def get_pc(self):
+        pc_str_lines = []
+        for it in tqdm.tqdm(self.k):
+            pc_file = self.pc_files[it]
+            pc_str_lines.extend([line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line])
+        tic = time.time()
+        pc = np.array([[float(item) for item in line.split()[:3]] + [1.0] for line in pc_str_lines])
+        toc = time.time()
+        print('Converting to numpy array costs %.3lf seconds.' % (toc - tic))
+        return pc
+
+    def get_label(self, label_path):
+        label = []
+        for it in tqdm.tqdm(self.k):
+            label.append(np.load(f'{label_path}/{self.idx}_{it}.npz'))
+        return np.concatenate(label)
+
 def create_autovision_simple_label_colormap():
     colormap = np.zeros((256, 3), dtype=np.uint8)
     _PALETTE = np.array(

@@ -33,24 +33,11 @@ if __name__ == '__main__':
         cam_msk_path  = f'data/2018-10-08-Calibration-Data/mask_{CAM_NAME}.png'
         cam_int_path  =  'data/2018-10-08-Calibration-Data/camera_system_cal.json'
         cam_ext_path  =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
-        pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
-        # pc_path       =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/point_cloud/point_cloud_%d.txt'
+        # pc_path       =  'data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_clouds_length_1000m_overlap_100m/point_cloud_%d.zip'
+        pc_path       =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/local_point_clouds/%d.zip'
+        label_path    =  '2_night_pc_label'
         img_path      =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/DEV_000F3102F884/%05d.png'
         depth_path    =  'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_depth/DEV_000F3102F884/%05d.pgm'
-        downsampling_scale = 2
-
-    # Local
-    if host_name.startswith('lizuoyue') or host_name.startswith('staff-net-vpn-dhcp'):
-        import matplotlib
-        import matplotlib.pyplot as plt
-        cmap = matplotlib.cm.get_cmap('viridis')
-        matplotlib.rcParams['agg.path.chunksize'] = 10000
-        cam_msk_path  = f'../autovision_day_night_data/2018-10-08-Calibration-Data/mask_{CAM_NAME}.png'
-        cam_int_path  =  '../autovision_day_night_data/2018-10-08-Calibration-Data/camera_system_cal.json'
-        cam_ext_path  =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/poses_T_world_camera.txt'
-        pc_path       =  '../autovision_day_night_data/2018-10-18-Lim-Chu-Kang-Run-1-Day/point_cloud/point_cloud_%d_sample_100.zip'
-        img_path      =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_fisheye/%05d.png'
-        depth_path    =  '../autovision_day_night_data/2018-11-01-Lim-Chu-Kang-Run-3-Night/img_depth/%05d.pgm'
         downsampling_scale = 2
 
     #
@@ -60,31 +47,20 @@ if __name__ == '__main__':
 
     #
     np.set_printoptions(suppress=True)
-    log = open('log.out', 'w')
-    os.system('mkdir night_depth night_semantics')
+    log = open('3_night.out', 'w')
+    os.system('mkdir 3_night_dep 3_night_sem')
 
     #
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
         if i in SEP:
-            # pc_coord = pc_str_lines2nxXYZ1(get_pc_nxstr(pc_path % WHICH_PC[i], show_time=SHOW_TIME), show_time=SHOW_TIME)
-            # pc_d = np.load('pc_label/pc_label_%d.npz' % WHICH_PC[i])
-            # pc_label = pc_d['label']
-            # pc_color = pc_d['color']
-            # pc_index = np.arange(pc_coord.shape[0])
-            # assert(pc_label.shape[0] == pc_coord.shape[0])
-            # assert(pc_color.shape[0] == pc_coord.shape[0])
-            pc_coord = np.concatenate([np.loadtxt(pc_path % j)[:, :4] for j in range(2, 102)])
-            pc_coord[:, 3] = 1
-            pc_d = [np.load((pc_path % j).replace('.txt', '.npz')) for j in range(2, 102)]
-            pc_label = np.concatenate([item['label'] for item in pc_d])
-            pc_color = np.concatenate([item['color'] for item in pc_d])
-            pc_index = np.arange(pc_coord.shape[0])
-            assert(pc_label.shape[0] == pc_coord.shape[0])
-            assert(pc_color.shape[0] == pc_coord.shape[0])
+            nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i])
+            pc_label = nightObj.get_label(label_path)
+            pc_coord = nightObj.get_pc()
 
         # if i + FRAME_FROM != 3400:
         #     continue
+        quit()
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
