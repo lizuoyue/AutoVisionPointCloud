@@ -55,7 +55,7 @@ class nightLocalPointCloud(object):
     def get_pc(self):
         print('Getting point cloud ...')
         pc_str_lines = []
-        for it in tqdm.tqdm(self.k):
+        for it in self.k:
             pc_file = self.pc_files[it]
             pc_str_lines.extend([line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line])
         tic = time.time()
@@ -67,7 +67,7 @@ class nightLocalPointCloud(object):
     def get_label(self, label_path):
         print('Getting labels ...')
         label = []
-        for it in tqdm.tqdm(self.k):
+        for it in self.k:
             label.append(np.load(f'{label_path}/{self.idx}_{it}.npz')['label'])
         return np.concatenate(label)
 

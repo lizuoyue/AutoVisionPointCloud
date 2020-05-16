@@ -21,7 +21,7 @@ if __name__ == '__main__':
     WHICH_PC = np.cumsum(WHICH_PC)
     assert(PC_NUM_SEP == (len(SEP) - 1))
     assert((FRAME_TO - FRAME_FROM) == SEP[-1])
-    SHOW_TIME = True
+    SHOW_TIME = False
 
     host_name = socket.gethostname()
 
@@ -51,22 +51,17 @@ if __name__ == '__main__':
     os.system('mkdir 3_night_dep 3_night_sem')
 
     #
-    # for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
-    for i, pose in enumerate(cam_poses[FRAME_FROM: FRAME_TO]):
-        if i == 0:
-            continue
+    for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
+    # for i, pose in enumerate(cam_poses[FRAME_FROM: FRAME_TO]):
 
         if i in SEP:
             nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i])
             pc_label = nightObj.get_label(label_path)
             pc_coord = nightObj.get_pc()
-
+            print(f'Point cloud {WHICH_PC[i]}')
             print(pc_label.shape)
             print(pc_coord.shape)
-
-        # if i + FRAME_FROM != 3400:
-        #     continue
-        continue
+            assert(pc_label.shape[0] == pc_coord.shape[0])
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -82,8 +77,6 @@ if __name__ == '__main__':
             depth_valid = (0 < depth)
         depth_min = depth * (1 - EPSILON)
         depth_max = depth * (1 + EPSILON)
-
-        # pose = np.array([0.465872010462144, -0.517772394781267, 0.550068720893017, -0.460759611256837, 356270.50130326, 158611.501875941, 34.2677767156021])
 
         mat_cam_to_world = get_cam_ext_np_4x4(pose)
         mat_world_to_cam = np.linalg.inv(mat_cam_to_world)
@@ -164,7 +157,7 @@ if __name__ == '__main__':
                 np.minimum(fake_depth, MAX_Z).reshape(img_size[::-1]),
             ])
             to_show = (cmap((to_show - to_show.min()) / (to_show.max() - to_show.min())) * 255).astype(np.uint8)
-            Image.fromarray(to_show).save('night_depth/%05d.png' % (i + FRAME_FROM))
+            Image.fromarray(to_show).save('3_night_dep/%05d.png' % (i + FRAME_FROM))
             toc = time.time()
             if SHOW_TIME:
                 print('Creating fake depth costs %.3lf seconds.' % (toc - tic))
@@ -176,8 +169,8 @@ if __name__ == '__main__':
         if True:
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
-            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.3 + pc_color[pc_cam_index] * 0.7).astype(np.uint8)
-            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('night_semantics/%05d.png' % (i + FRAME_FROM))
+            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.5 + pc_color[pc_cam_index] * 0.5).astype(np.uint8)
+            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('3_night_sem/%05d.png' % (i + FRAME_FROM))
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
 
