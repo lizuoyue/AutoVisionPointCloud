@@ -24,6 +24,7 @@ if __name__ == '__main__':
     SHOW_TIME = False
 
     host_name = socket.gethostname()
+    colormap = create_autovision_simple_label_colormap().flatten()
 
     # Server
     if host_name == 'cvg-desktop-17-ubuntu':
@@ -170,12 +171,14 @@ if __name__ == '__main__':
         if True:
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
-            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.5 + pc_color[pc_cam_index] * 0.5).astype(np.uint8)
+            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
             Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('3_night_sem/%05d_vis.png' % (i + FRAME_FROM))
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
             fake_sem[img_1d_idx] = pc_label[pc_cam_index].astype(np.uint8)
-            Image.fromarray(fake_sem.reshape(img_size[::-1])).save('3_night_sem/%05d.png' % (i + FRAME_FROM))
+            fake_sem = Image.fromarray(fake_sem.reshape(img_size[::-1])).convert('P')
+            fake_sem.putpalette(colormap)
+            fake_sem.save('3_night_sem/%05d.png' % (i + FRAME_FROM))
             toc = time.time()
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))
