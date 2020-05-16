@@ -68,7 +68,7 @@ class nightLocalPointCloud(object):
         print('Getting labels ...')
         label = []
         for it in tqdm.tqdm(self.k):
-            label.append(np.load(f'{label_path}/{self.idx}_{it}.npz'))
+            label.append(np.load(f'{label_path}/{self.idx}_{it}.npz')['label'])
         return np.concatenate(label)
 
 def create_autovision_simple_label_colormap():
