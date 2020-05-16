@@ -53,6 +53,7 @@ class nightLocalPointCloud(object):
         return idx, mat.dot(pc.T).T
 
     def get_pc(self):
+        print('Getting point cloud ...')
         pc_str_lines = []
         for it in tqdm.tqdm(self.k):
             pc_file = self.pc_files[it]
@@ -64,6 +65,7 @@ class nightLocalPointCloud(object):
         return pc
 
     def get_label(self, label_path):
+        print('Getting labels ...')
         label = []
         for it in tqdm.tqdm(self.k):
             label.append(np.load(f'{label_path}/{self.idx}_{it}.npz'))

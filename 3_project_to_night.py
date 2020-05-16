@@ -51,12 +51,16 @@ if __name__ == '__main__':
     os.system('mkdir 3_night_dep 3_night_sem')
 
     #
-    for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
+    # for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
+    for i, pose in enumerate(cam_poses[FRAME_FROM: FRAME_TO]):
 
         if i in SEP:
             nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i])
             pc_label = nightObj.get_label(label_path)
             pc_coord = nightObj.get_pc()
+
+            print(pc_label.shape)
+            print(pc_coord.shape)
 
         # if i + FRAME_FROM != 3400:
         #     continue
