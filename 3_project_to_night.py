@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
         # if i + FRAME_FROM != 3400:
         #     continue
-        quit()
+        continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
