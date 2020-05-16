@@ -64,12 +64,14 @@ class nightLocalPointCloud(object):
         print('Converting to numpy array costs %.3lf seconds.' % (toc - tic))
         return pc
 
-    def get_label(self, label_path):
+    def get_label_color(self, label_path):
         print('Getting labels ...')
-        label = []
+        label, color = [], []
         for it in self.k:
-            label.append(np.load(f'{label_path}/{self.idx}_{it}.npz')['label'])
-        return np.concatenate(label)
+            d = np.load(f'{label_path}/{self.idx}_{it}.npz')
+            label.append(d['label'])
+            color.append(d['color'])
+        return np.concatenate(label), np.concatenate(color)
 
 def create_autovision_simple_label_colormap():
     colormap = np.zeros((256, 3), dtype=np.uint8)
