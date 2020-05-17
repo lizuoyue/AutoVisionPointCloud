@@ -1,5 +1,6 @@
 import numpy as np
 import glob
+import json
 
 for file in sorted(glob.glob('0_day_mapping/*.npz')):
 	n1 = np.load(file)['img_1d_idx'].shape[0]
