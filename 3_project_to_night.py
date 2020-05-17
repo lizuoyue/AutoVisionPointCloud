@@ -15,6 +15,7 @@ if __name__ == '__main__':
     CAM_NAME = 'DEV_000F3102F884'
     CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.01
     SEP = [0, 1780, 3404, 4956, 6683, 8424, 10000, 11534, 13122, 14434]
+    SEP = [0, 1777, 3402, 4953, 6681, 8422,  9997, 11531, 13120, 14461]
     FRAME_FROM, FRAME_TO = 2833, 17267
     WHICH_PC = np.zeros((SEP[-1]), np.int32)
     WHICH_PC[SEP[1:-1]] = 1
