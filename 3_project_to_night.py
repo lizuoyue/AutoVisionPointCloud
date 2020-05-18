@@ -47,9 +47,11 @@ if __name__ == '__main__':
     cam_mask = np.array(Image.open(cam_msk_path).resize(img_size))[..., 0]
 
     #
+    save_sem = '3_night_sem_01'
+    save_dep = '3_night_dep_01'
     np.set_printoptions(suppress=True)
     log = open('3_night_01.out', 'w')
-    os.system('mkdir 3_night_dep_01 3_night_sem_01')
+    os.system(f'mkdir {save_sem} {save_dep}')
 
 
     nightObj = [nightLocalPointCloud(pc_path % i, label_path) for i in range(PC_NUM_SEP)]
@@ -180,7 +182,7 @@ if __name__ == '__main__':
                 np.minimum(fake_depth, MAX_Z).reshape(img_size[::-1]),
             ])
             to_show = (cmap((to_show - to_show.min()) / (to_show.max() - to_show.min())) * 255).astype(np.uint8)
-            Image.fromarray(to_show).save('3_night_dep/%05d.png' % (i + FRAME_FROM))
+            Image.fromarray(to_show).save(f'{save_dep}/%05d.png' % (i + FRAME_FROM))
             toc = time.time()
             if SHOW_TIME:
                 print('Creating fake depth costs %.3lf seconds.' % (toc - tic))
@@ -193,13 +195,13 @@ if __name__ == '__main__':
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
             fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
-            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save('3_night_sem/%05d_vis.png' % (i + FRAME_FROM))
+            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
             fake_sem[img_1d_idx] = pc_label[pc_cam_index].astype(np.uint8)
             fake_sem = Image.fromarray(fake_sem.reshape(img_size[::-1])).convert('P')
             fake_sem.putpalette(colormap)
-            fake_sem.save('3_night_sem/%05d.png' % (i + FRAME_FROM))
+            fake_sem.save(f'{save_sem}/%05d.png' % (i + FRAME_FROM))
             toc = time.time()
             if SHOW_TIME:
                 print('Creating fake image costs %.3lf seconds.' % (toc - tic))

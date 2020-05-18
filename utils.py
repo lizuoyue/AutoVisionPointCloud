@@ -39,14 +39,18 @@ class nightLocalPointCloud(object):
         self.label_path = npz_path
         return
 
-    def get_next_transformed_local_pc(self):
+    def get_next_transformed_local_pc(self, it=None):
+        if it is None:
+            it = self.iter
+
         if self.iter == self.num:
             return None
         else:
-            idx = self.k[self.iter]
+            idx = self.k[it]
             pc_file = self.pc_files[idx]
             mat_file = self.mat_files[idx]
-            self.iter += 1
+            if it is None:
+                self.iter += 1
             pc_str_lines = [line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line]
             mat_str_lines = [line.strip() for line in self.archive.read(mat_file).decode('utf-8').split('\n') if line]
             pc = np.array([[float(item) for item in line.split()[:3]] + [1.0] for line in pc_str_lines])
