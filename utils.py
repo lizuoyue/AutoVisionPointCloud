@@ -84,6 +84,14 @@ class nightLocalPointCloud(object):
         label, color = [], []
         for it in self.k[a: b]:
             d = np.load(f'{self.label_path}/{self.idx}_{it}.npz')
+            potential = f'{self.label_path}_add/{self.idx+1}_{it}.npz'
+            if os.path.isfile(potential):
+                d_new = np.load(potential)
+                d['label'][d['label'] == 15] = 255
+                d_new['label'][d_new['label'] == 15] = 255
+                assert(d['label'].shape == d_new['label'].shape)
+                choose = (d['label'] == 255)
+                d['label'][choose] = d_new['label'][choose]
             label.append(d['label'])
             color.append(d['color'])
         return np.concatenate(label), np.concatenate(color)

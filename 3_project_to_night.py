@@ -47,10 +47,10 @@ if __name__ == '__main__':
     cam_mask = np.array(Image.open(cam_msk_path).resize(img_size))[..., 0]
 
     #
-    save_sem = '3_night_sem_01'
-    save_dep = '3_night_dep_01'
+    save_sem = '3_night_sem_add'
+    save_dep = '3_night_dep_add'
     np.set_printoptions(suppress=True)
-    log = open('3_night_01.out', 'w')
+    log = open('3_night_add.out', 'w')
     os.system(f'mkdir {save_sem} {save_dep}')
 
 
@@ -73,10 +73,10 @@ if __name__ == '__main__':
             # print(pc_coord.shape)
             # assert(pc_label.shape[0] == pc_coord.shape[0])
 
-            pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-15)
-            pc_coord_1 = nightObj[j-1].get_pc(a=-15)
-            pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=15)
-            pc_coord_2 = nightObj[j].get_pc(b=15)
+            pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-20)
+            pc_coord_1 = nightObj[j-1].get_pc(a=-20)
+            pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=20)
+            pc_coord_2 = nightObj[j].get_pc(b=20)
 
             pc_coord = np.concatenate([pc_coord_1, pc_coord_2])
             pc_label = np.concatenate([pc_label_1, pc_label_2])
@@ -87,6 +87,7 @@ if __name__ == '__main__':
             print(pc_label.shape)
             print(pc_coord.shape)
             assert(pc_label.shape[0] == pc_coord.shape[0])
+            j += 1
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
