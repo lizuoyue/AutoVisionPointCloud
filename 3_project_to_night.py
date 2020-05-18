@@ -87,6 +87,8 @@ if __name__ == '__main__':
             print(pc_label.shape)
             print(pc_coord.shape)
             assert(pc_label.shape[0] == pc_coord.shape[0])
+
+        if i == (SEP[j] + 100):
             j += 1
 
         if False:
