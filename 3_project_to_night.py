@@ -61,6 +61,8 @@ if __name__ == '__main__':
         if i < (SEP[j] - 100) or i > (SEP[j] + 100):
             continue
 
+        print(i)
+
         if i == (SEP[j] - 100):
             # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
             # pc_label, pc_color = nightObj.get_label_color()
