@@ -77,7 +77,7 @@ class nightLocalPointCloud(object):
         print('Getting labels ...')
         a, b = self._ab(a, b)
         label, color = [], []
-        for it in self.k:
+        for it in self.k[a: b]:
             d = np.load(f'{self.label_path}/{self.idx}_{it}.npz')
             label.append(d['label'])
             color.append(d['color'])
