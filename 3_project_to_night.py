@@ -55,13 +55,11 @@ if __name__ == '__main__':
     nightObj = [nightLocalPointCloud(pc_path % i, label_path) for i in range(PC_NUM_SEP)]
 
     #
-    j = 0
+    j = 1
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
         if i < (SEP[j] - 100) or i > (SEP[j] + 100):
             continue
-
-        print(i)
 
         if i == (SEP[j] - 100):
             # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
@@ -73,10 +71,10 @@ if __name__ == '__main__':
             # print(pc_coord.shape)
             # assert(pc_label.shape[0] == pc_coord.shape[0])
 
-            pc_label_1, pc_color_1 = nightObj[j].get_label_color(a=-15)
-            pc_coord_1 = nightObj[j].get_pc(a=-15)
-            pc_label_2, pc_color_2 = nightObj[j+1].get_label_color(b=15)
-            pc_coord_2 = nightObj[j+1].get_pc(b=15)
+            pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-15)
+            pc_coord_1 = nightObj[j-1].get_pc(a=-15)
+            pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=15)
+            pc_coord_2 = nightObj[j].get_pc(b=15)
 
             pc_coord = np.concatenate([pc_coord_1, pc_coord_2])
             pc_label = np.concatenate([pc_label_1, pc_label_2])
