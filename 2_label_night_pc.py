@@ -55,13 +55,13 @@ if __name__ == '__main__':
     night_pc_path = 'data/2018-11-01-Lim-Chu-Kang-Run-3-Night/local_point_clouds/%d.zip'
     save_path = '2_night_pc_label_add'
 
-    for i in range(1,9):
+    for i in range(1, 9):
         day_pc_coord, day_pc_label = get_day_pc(day_pc_path % i, day_label_path % i, show_time=True)
         day_pc_label = day_pc_label[:day_pc_coord.shape[0]]
         nightObj = nightLocalPointCloud(night_pc_path % (i-1))
         sample = []
         # for j in tqdm.tqdm(list(range(nightObj.num))):
-        for j in [-2, -1]:
+        for j in range(-10, 0):
             n, night_pc = nightObj.get_next_transformed_local_pc(it=j)
 
             x_min, y_min, _ = night_pc.min(axis=0) - BUFFER_DIST
