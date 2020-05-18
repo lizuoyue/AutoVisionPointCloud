@@ -15,7 +15,6 @@ if __name__ == '__main__':
     CAM_NAME = 'DEV_000F3102F884'
     CUBE, MAX_Z, PC_NUM_SEP, EPSILON = 100, 50, 9, 0.01
     SEP = [0, 1780, 3404, 4956, 6683, 8424, 10000, 11534, 13122, 14434]
-    SEP = [0, 1777, 3402, 4953, 6681, 8422,  9997, 11531, 13120, 14461]
     FRAME_FROM, FRAME_TO = 2833, 17267
     WHICH_PC = np.zeros((SEP[-1]), np.int32)
     WHICH_PC[SEP[1:-1]] = 1
@@ -49,17 +48,38 @@ if __name__ == '__main__':
 
     #
     np.set_printoptions(suppress=True)
-    log = open('3_night.out', 'w')
-    os.system('mkdir 3_night_dep 3_night_sem')
+    log = open('3_night_01.out', 'w')
+    os.system('mkdir 3_night_dep_01 3_night_sem_01')
+
+
+    nightObj = [nightLocalPointCloud(pc_path % i, label_path) for i in range(PC_NUM_SEP)]
 
     #
+    j = 0
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
-    # for i, pose in enumerate(cam_poses[FRAME_FROM: FRAME_TO]):
 
-        if i in SEP:
-            nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i])
-            pc_label, pc_color = nightObj.get_label_color(label_path)
-            pc_coord = nightObj.get_pc()
+        if i < (SEP[j] - 100) or i > (SEP[j] + 100):
+            continue
+
+        if i == (SEP[j] - 100):
+            # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
+            # pc_label, pc_color = nightObj.get_label_color()
+            # pc_coord = nightObj.get_pc()
+            # pc_index = np.arange(pc_coord.shape[0])
+            # print(f'Point cloud {WHICH_PC[i]}')
+            # print(pc_label.shape)
+            # print(pc_coord.shape)
+            # assert(pc_label.shape[0] == pc_coord.shape[0])
+
+            pc_label_1, pc_color_1 = nightObj[j].get_label_color(a=-15)
+            pc_coord_1 = nightObj[j].get_pc(a=-15)
+            pc_label_2, pc_color_2 = nightObj[j+1].get_label_color(b=15)
+            pc_coord_2 = nightObj[j+1].get_pc(b=15)
+
+            pc_coord = np.concatenate([pc_coord_1, pc_coord_2])
+            pc_label = np.concatenate([pc_label_1, pc_label_2])
+            pc_color = np.concatenate([pc_color_1, pc_color_2])
+
             pc_index = np.arange(pc_coord.shape[0])
             print(f'Point cloud {WHICH_PC[i]}')
             print(pc_label.shape)

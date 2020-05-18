@@ -20,7 +20,7 @@ import socket
 
 class nightLocalPointCloud(object):
 
-    def __init__(self, zip_path):
+    def __init__(self, zip_path, npz_path):
         self.idx = int(os.path.basename(zip_path).replace('.zip', ''))
         self.archive = zipfile.ZipFile(zip_path, 'r')
         self.pc_files, self.mat_files = {}, {}
@@ -36,6 +36,7 @@ class nightLocalPointCloud(object):
         self.num = len(self.k)
         self.iter = 0
         self.sample = []
+        self.label_path = npz_path
         return
 
     def get_next_transformed_local_pc(self):
@@ -52,10 +53,18 @@ class nightLocalPointCloud(object):
             mat = np.array([[float(item) for item in line.split()] for line in mat_str_lines[:3]])
         return idx, mat.dot(pc.T).T
 
-    def get_pc(self):
+    def _ab(self, a, b):
+        if a is None:
+            a = 0
+        if b is None:
+            b = len(self.k)
+        return a, b
+
+    def get_pc(self, a=None, b=None):
         print('Getting point cloud ...')
+        a, b = self._ab(a, b)
         pc_str_lines = []
-        for it in self.k:
+        for it in self.k[a: b]:
             pc_file = self.pc_files[it]
             pc_str_lines.extend([line.strip() for line in self.archive.read(pc_file).decode('utf-8').split('\n') if line])
         tic = time.time()
@@ -64,14 +73,27 @@ class nightLocalPointCloud(object):
         print('Converting to numpy array costs %.3lf seconds.' % (toc - tic))
         return pc
 
-    def get_label_color(self, label_path):
+    def get_label_color(self, a=None, b=None):
         print('Getting labels ...')
+        a, b = self._ab(a, b)
         label, color = [], []
         for it in self.k:
-            d = np.load(f'{label_path}/{self.idx}_{it}.npz')
+            d = np.load(f'{self.label_path}/{self.idx}_{it}.npz')
             label.append(d['label'])
             color.append(d['color'])
         return np.concatenate(label), np.concatenate(color)
+
+    def get_pc_last_100m(self):
+        return self.get_pc(a=-10)
+
+    def get_label_color_last_100m(self):
+        return self.get_label_color(a=-10)
+
+    def get_pc_first_100m(self):
+        return self.get_pc(b=10)
+
+    def get_label_color_first_100m(self):
+        return self.get_label_color(b=10)
 
 def create_autovision_simple_label_colormap():
     colormap = np.zeros((256, 3), dtype=np.uint8)
