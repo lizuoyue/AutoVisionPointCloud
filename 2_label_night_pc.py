@@ -86,7 +86,7 @@ if __name__ == '__main__':
             score_max = score.max(axis=1)
             night_pc_label = score.argmax(axis=1)
             night_pc_label[score_max < 1e-6] = 255
-            night_pc_label[night_pc_label == 15] == 255
+            night_pc_label[night_pc_label == 15] = 255
 
             np.savez_compressed(f'{save_path}/{i}_{n}.npz', label=night_pc_label, color=colormap[night_pc_label])
 
