@@ -20,7 +20,7 @@ import socket
 
 class nightLocalPointCloud(object):
 
-    def __init__(self, zip_path, npz_path):
+    def __init__(self, zip_path, npz_path=None):
         self.idx = int(os.path.basename(zip_path).replace('.zip', ''))
         self.archive = zipfile.ZipFile(zip_path, 'r')
         self.pc_files, self.mat_files = {}, {}
@@ -78,6 +78,7 @@ class nightLocalPointCloud(object):
         return pc
 
     def get_label_color(self, a=None, b=None):
+        assert(self.label_path is not None)
         print('Getting labels ...')
         a, b = self._ab(a, b)
         label, color = [], []
