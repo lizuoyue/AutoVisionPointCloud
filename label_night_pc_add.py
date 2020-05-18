@@ -8,4 +8,4 @@ for file in files:
 	a = int(a) - 1
 	label = np.load(f'2_night_pc_label/{a}_{b}')['label']
 	new_label = np.load(file)['label']
-	print(file, (new_label[label == 255] < 255).mean())
+	print(file, (new_label[label == 255] < 255).sum())
