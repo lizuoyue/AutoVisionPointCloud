@@ -58,12 +58,13 @@ if __name__ == '__main__':
 
     #
     j = 1
+    window = 10
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
-        if i < (SEP[j] - 100) or i > (SEP[j] + 100):
+        if i < (SEP[j] - window) or i > (SEP[j] + window):
             continue
 
-        if i == (SEP[j] - 100):
+        if i == (SEP[j] - window):
             # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
             # pc_label, pc_color = nightObj.get_label_color()
             # pc_coord = nightObj.get_pc()
@@ -88,7 +89,7 @@ if __name__ == '__main__':
             print(pc_coord.shape)
             assert(pc_label.shape[0] == pc_coord.shape[0])
 
-        if i == (SEP[j] + 100):
+        if i == (SEP[j] + window):
             j += 1
 
         if False:
