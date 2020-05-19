@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     #
     j = 1
-    window = 10
+    window = 100
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
         if i < (SEP[j] - window) or i > (SEP[j] + window):
@@ -93,7 +93,6 @@ if __name__ == '__main__':
 
         if i == (SEP[j] + window):
             j += 1
-            break
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -200,8 +199,8 @@ if __name__ == '__main__':
 
         if True:
             tic = time.time()
-            fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
-            fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
+            # fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
+            # fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
             # Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
