@@ -84,11 +84,10 @@ class nightLocalPointCloud(object):
         label, color = [], []
         for it in self.k[a: b]:
             d = np.load(f'{self.label_path}/{self.idx}_{it}.npz')
+            d_label = d['label'].copy()
             potential = f'{self.label_path}_add/{self.idx+1}_{it}.npz'
             if os.path.isfile(potential):
                 d_new = np.load(potential)
-
-                d_label = d['label'].copy()
                 d_new_label = d_new['label'].copy()
                 assert(d_label.shape == d_new_label.shape)
 
