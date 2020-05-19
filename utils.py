@@ -98,7 +98,7 @@ class nightLocalPointCloud(object):
                 d_label[choose] = d_new_label[choose]
 
             # print(np.unique(d['label']))
-            # d['label'][:] = it
+            d_label[:] = it
             # print(np.unique(d['label']))
             # input()
             label.append(d_label)
