@@ -64,7 +64,7 @@ if __name__ == '__main__':
         if i < (SEP[j] - window) or i > (SEP[j] + window):
             continue
 
-        if (i+FRAME_FROM) == 15957:#i == (SEP[j] - window):
+        if (i+FRAME_FROM) == 4613:#15957:#i == (SEP[j] - window):
             # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
             # pc_label, pc_color = nightObj.get_label_color()
             # pc_coord = nightObj.get_pc()
@@ -74,16 +74,16 @@ if __name__ == '__main__':
             # print(pc_coord.shape)
             # assert(pc_label.shape[0] == pc_coord.shape[0])
 
-            pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-20)
+            # pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-20)
             # print(np.unique(pc_label_1))
-            pc_coord_1 = nightObj[j-1].get_pc(a=-20)
+            # pc_coord_1 = nightObj[j-1].get_pc(a=-20)
             pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=20)
             # print(np.unique(pc_label_2))
             pc_coord_2 = nightObj[j].get_pc(b=20)
 
-            pc_coord = np.concatenate([pc_coord_1, pc_coord_2])
-            pc_label = np.concatenate([pc_label_1, pc_label_2])
-            pc_color = np.concatenate([pc_color_1, pc_color_2])
+            pc_coord = pc_coord_2#np.concatenate([pc_coord_1, pc_coord_2])
+            pc_label = pc_label_2#np.concatenate([pc_label_1, pc_label_2])
+            pc_color = pc_color_2#np.concatenate([pc_color_1, pc_color_2])
 
             pc_index = np.arange(pc_coord.shape[0])
             print(f'Point cloud {WHICH_PC[i]}')
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if i == (SEP[j] + window):
             j += 1
 
-        if (i+FRAME_FROM) != 15957:
+        if (i+FRAME_FROM) != 4613#15957:
             continue
 
         if False:
