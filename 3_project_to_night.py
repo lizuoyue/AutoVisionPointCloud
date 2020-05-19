@@ -75,8 +75,10 @@ if __name__ == '__main__':
             # assert(pc_label.shape[0] == pc_coord.shape[0])
 
             pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-20)
+            print(np.unique(pc_label_1))
             pc_coord_1 = nightObj[j-1].get_pc(a=-20)
             pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=20)
+            print(np.unique(pc_label_2))
             pc_coord_2 = nightObj[j].get_pc(b=20)
 
             pc_coord = np.concatenate([pc_coord_1, pc_coord_2])
@@ -200,7 +202,7 @@ if __name__ == '__main__':
             tic = time.time()
             fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
             fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
-            Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
+            # Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
             fake_sem[img_1d_idx] = pc_label[pc_cam_index].astype(np.uint8)
