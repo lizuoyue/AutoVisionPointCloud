@@ -75,10 +75,10 @@ if __name__ == '__main__':
             # assert(pc_label.shape[0] == pc_coord.shape[0])
 
             pc_label_1, pc_color_1 = nightObj[j-1].get_label_color(a=-20)
-            print(np.unique(pc_label_1))
+            # print(np.unique(pc_label_1))
             pc_coord_1 = nightObj[j-1].get_pc(a=-20)
             pc_label_2, pc_color_2 = nightObj[j].get_label_color(b=20)
-            print(np.unique(pc_label_2))
+            # print(np.unique(pc_label_2))
             pc_coord_2 = nightObj[j].get_pc(b=20)
 
             pc_coord = np.concatenate([pc_coord_1, pc_coord_2])

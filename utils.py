@@ -87,18 +87,23 @@ class nightLocalPointCloud(object):
             potential = f'{self.label_path}_add/{self.idx+1}_{it}.npz'
             if os.path.isfile(potential):
                 d_new = np.load(potential)
-                d['label'][d['label'] == 15] = 255
-                d_new['label'][d_new['label'] == 15] = 255
-                assert(d['label'].shape == d_new['label'].shape)
-                choose = (d['label'] == 255)
-                d['label'][choose] = d_new['label'][choose]
 
-            print(np.unique(d['label']))
-            d['label'][:] = it
-            print(np.unique(d['label']))
-            input()
-            label.append(d['label'])
-            print(np.unique(d['label']))
+                d_label = d['label'].copy()
+                d_new_label = d_new['label'].copy()
+                assert(d_label.shape == d_new_label.shape)
+
+                d_label[d_label == 15] = 255
+                d_new_label[d_new_label == 15] = 255
+
+                choose = (d_label == 255)
+                d_label[choose] = d_new_label[choose]
+
+            # print(np.unique(d['label']))
+            # d['label'][:] = it
+            # print(np.unique(d['label']))
+            # input()
+            label.append(d_label)
+            # print(np.unique(d['label']))
             color.append(d['color'])
         return np.concatenate(label), np.concatenate(color)
 
