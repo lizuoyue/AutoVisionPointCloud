@@ -93,6 +93,9 @@ class nightLocalPointCloud(object):
                 assert(d['label'].shape == d_new['label'].shape)
                 choose = (d['label'] == 255)
                 d['label'][choose] = d_new['label'][choose]
+
+                d['label'] = it
+
             label.append(d['label'])
             color.append(d['color'])
         return np.concatenate(label), np.concatenate(color)
