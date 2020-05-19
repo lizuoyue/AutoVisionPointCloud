@@ -91,6 +91,7 @@ if __name__ == '__main__':
 
         if i == (SEP[j] + window):
             j += 1
+            break
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
