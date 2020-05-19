@@ -93,7 +93,10 @@ class nightLocalPointCloud(object):
                 choose = (d['label'] == 255)
                 d['label'][choose] = d_new['label'][choose]
 
+            print(np.unique(d['label']))
             d['label'][:] = it
+            print(np.unique(d['label']))
+            input()
             label.append(d['label'])
             print(np.unique(d['label']))
             color.append(d['color'])
