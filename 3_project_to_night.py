@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if i == (SEP[j] + window):
             j += 1
 
-        if (i+FRAME_FROM) != 4613#15957:
+        if (i+FRAME_FROM) != 4613:#15957:
             continue
 
         if False:
