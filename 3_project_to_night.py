@@ -58,13 +58,13 @@ if __name__ == '__main__':
 
     #
     j = 1
-    window = 10
+    window = 100
     for i, pose in tqdm.tqdm(list(enumerate(cam_poses[FRAME_FROM: FRAME_TO]))):
 
         if i < (SEP[j] - window) or i > (SEP[j] + window):
             continue
 
-        if (i+FRAME_FROM) == 15957:#i == (SEP[j] - window):
+        if i == (SEP[j] - window):
             # nightObj = nightLocalPointCloud(pc_path % WHICH_PC[i], label_path)
             # pc_label, pc_color = nightObj.get_label_color()
             # pc_coord = nightObj.get_pc()
@@ -91,9 +91,6 @@ if __name__ == '__main__':
 
         if i == (SEP[j] + window):
             j += 1
-
-        if (i+FRAME_FROM) != 15957:
-            continue
 
         if False:
             depth = np.array(Image.open(depth_path % i)) / 32767 * MAX_Z
@@ -203,11 +200,6 @@ if __name__ == '__main__':
             # fake_img = np.array(Image.open(img_path % (i + FRAME_FROM)).convert('RGB')).reshape((-1, 3))
             # fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
             # Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
-
-            # fake_sem = np.zeros(img_size[::-1], dtype=np.int32).reshape((-1))
-            # fake_sem[img_1d_idx] = pc_label[pc_cam_index]
-            # np.save('hehehehehe.npy', fake_sem)
-            # break
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
             fake_sem[img_1d_idx] = pc_label[pc_cam_index].astype(np.uint8)
