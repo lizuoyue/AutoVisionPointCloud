@@ -105,7 +105,7 @@ class nightLocalPointCloud(object):
                 print(potential)
 
             # print(np.unique(d['label']))
-            d_label[:] = it
+            # d_label[:] = it
             # print(np.unique(d['label']))
             # input()
             label.append(d_label)
