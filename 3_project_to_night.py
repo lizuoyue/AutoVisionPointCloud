@@ -204,10 +204,10 @@ if __name__ == '__main__':
             # fake_img[img_1d_idx] = (fake_img[img_1d_idx] * 0.85 + pc_color[pc_cam_index] * 0.15).astype(np.uint8)
             # Image.fromarray(fake_img.reshape(img_size[::-1] + (3, ))).save(f'{save_sem}/%05d_vis.png' % (i + FRAME_FROM))
 
-            fake_sem = np.zeros(img_size[::-1], dtype=np.int32).reshape((-1))
-            fake_sem[img_1d_idx] = pc_label[pc_cam_index]
-            np.save('hehehehehe.npy', fake_sem)
-            break
+            # fake_sem = np.zeros(img_size[::-1], dtype=np.int32).reshape((-1))
+            # fake_sem[img_1d_idx] = pc_label[pc_cam_index]
+            # np.save('hehehehehe.npy', fake_sem)
+            # break
 
             fake_sem = np.ones(img_size[::-1], dtype=np.uint8).reshape((-1)) * 255
             fake_sem[img_1d_idx] = pc_label[pc_cam_index].astype(np.uint8)
