@@ -85,8 +85,14 @@ class nightLocalPointCloud(object):
         for it in self.k[a: b]:
             d = np.load(f'{self.label_path}/{self.idx}_{it}.npz')
             d_label = d['label'].copy()
-            potential = f'{self.label_path}_add/{self.idx+1}_{it}.npz'
-            if os.path.isfile(potential):
+            potential_1 = f'{self.label_path}_add/{self.idx+1}_{it}.npz'
+            potential_2 = f'{self.label_path}_add/{self.idx-1}_{it}.npz'
+            potential = ''
+            if os.path.isfile(potential_1):
+                potential = potential_1
+            if os.path.isfile(potential_2):
+                potential = potential_2
+            if potential != '':
                 d_new = np.load(potential)
                 d_new_label = d_new['label'].copy()
                 assert(d_label.shape == d_new_label.shape)
@@ -96,6 +102,7 @@ class nightLocalPointCloud(object):
 
                 choose = (d_label == 255)
                 d_label[choose] = d_new_label[choose]
+                print(potential)
 
             # print(np.unique(d['label']))
             d_label[:] = it
