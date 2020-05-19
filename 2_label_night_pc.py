@@ -61,7 +61,7 @@ if __name__ == '__main__':
         nightObj = nightLocalPointCloud(night_pc_path % (i-1))
         sample = []
         # for j in tqdm.tqdm(list(range(nightObj.num))):
-        for j in range(-10, 0):
+        for j in range(-5, 0):
             n, night_pc = nightObj.get_next_transformed_local_pc(it=j)
 
             x_min, y_min, _ = night_pc.min(axis=0) - BUFFER_DIST
