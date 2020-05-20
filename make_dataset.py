@@ -34,5 +34,3 @@ if __name__ == '__main__':
 		Image.fromarray(np.vstack([img, sem])).save(f'{save_path}/%05d.png' % i)
 		img[valid] = (img[valid] * 0.618 + sem[valid] * 0.382).astype(np.uint8)
 		Image.fromarray(img).save(f'{save_alpha_path}/%05d.png' % i)
-		
-		break
