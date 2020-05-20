@@ -29,7 +29,7 @@ if __name__ == '__main__':
 		else:
 			continue
 		img = np.array(Image.open(img).convert('RGB'))
-		sem = colormap[sem.flatten()].reshape(img.shape[:2])
+		sem = colormap[sem.flatten()].reshape(img.shape[:2] + (3,))
 
 		Image.fromarray((img * 0.7 + sem * 0.3).astype(np.uint8)).save(f'{save_path}/%05d.png' % i)
 		Image.fromarray(np.vstack([img, sem])).save(f'{save_alpha_path}/%05d.png' % i)
