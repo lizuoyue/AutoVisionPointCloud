@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
 		if os.path.isfile(sem_add):
 			sem = np.array(Image.open(sem_add).convert('L'))
-		elif:
+		elif os.path.isfile(sem):
 			sem = np.array(Image.open(sem).convert('L'))
 		else:
 			continue
@@ -33,3 +33,4 @@ if __name__ == '__main__':
 
 		Image.fromarray((img * 0.7 + sem * 0.3).astype(np.uint8)).save(f'{save_path}/%05d.png' % i)
 		Image.fromarray(np.vstack([img, sem])).save(f'{save_alpha_path}/%05d.png' % i)
+		break
