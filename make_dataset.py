@@ -29,8 +29,10 @@ if __name__ == '__main__':
 		else:
 			continue
 		img = np.array(Image.open(img).convert('RGB'))
+		valid = (sem < 15)
 		sem = colormap[sem.flatten()].reshape(img.shape[:2] + (3,))
-
-		Image.fromarray((img * 0.7 + sem * 0.3).astype(np.uint8)).save(f'{save_path}/%05d.png' % i)
-		Image.fromarray(np.vstack([img, sem])).save(f'{save_alpha_path}/%05d.png' % i)
+		Image.fromarray(np.vstack([img, sem])).save(f'{save_path}/%05d.png' % i)
+		img[valid] = (img[valid] * 0.7 + sem[valid] * 0.3).astype(np.uint8)
+		Image.fromarray(img).save(f'{save_alpha_path}/%05d.png' % i)
+		
 		break
