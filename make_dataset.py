@@ -23,9 +23,9 @@ if __name__ == '__main__':
 		img = f'{img_path}/%05d.png' % i
 
 		if os.path.isfile(sem_add):
-			sem = np.array(Image.open(sem_add).convert('L'))
+			sem = np.array(Image.open(sem_add).convert('P'))
 		elif os.path.isfile(sem):
-			sem = np.array(Image.open(sem).convert('L'))
+			sem = np.array(Image.open(sem).convert('P'))
 		else:
 			continue
 		img = np.array(Image.open(img).convert('RGB'))
